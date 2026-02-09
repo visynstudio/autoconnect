@@ -80,6 +80,11 @@ export default function Dashboard() {
         navigate('/');
     };
 
+    // Close sidebar on route change
+    useEffect(() => {
+        setSidebarOpen(false);
+    }, [location]);
+
     if (loading) return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
             <div className="animate-spin" style={{ width: '40px', height: '40px', border: '3px solid #f3f3f3', borderTop: '3px solid var(--primary)', borderRadius: '50%' }}></div>
@@ -92,9 +97,14 @@ export default function Dashboard() {
     const isLimitReached = liveCount >= 5;
 
     return (
-        <div className="dashboard-layout" style={{ display: 'flex', minHeight: 'calc(100vh - 80px)', backgroundColor: '#f8fafc' }}>
+        <div className="dashboard-layout">
 
-            {/* SIDEBAR (Desktop) */}
+            {/* Mobile Sidebar Overlay */}
+            <div
+                className={`sidebar-overlay ${isSidebarOpen ? 'open' : ''}`}
+                onClick={() => setSidebarOpen(false)}
+            ></div>
+
             {/* SIDEBAR */}
             <aside className={`dashboard-sidebar ${isSidebarOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
@@ -138,7 +148,7 @@ export default function Dashboard() {
 
                 <div className="dashboard-content">
                     <div style={{ marginBottom: '2rem' }}>
-                        <h1 style={{ fontSize: '2rem', fontWeight: '800', color: '#0f172a' }}>Overview</h1>
+                        <h1 className="page-title">Overview</h1>
                         <p style={{ color: '#64748b' }}>Manage your listings and account status.</p>
                     </div>
 
@@ -247,6 +257,15 @@ export default function Dashboard() {
             <style>{`
                 .dashboard-layout { display: flex; min-height: 100vh; background: #f8fafc; position: relative; }
                 
+                /* Sidebar Overlay */
+                .sidebar-overlay {
+                    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                    background: rgba(0,0,0,0.4); z-index: 40;
+                    opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+                    backdrop-filter: blur(2px);
+                }
+                .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+
                 /* Sidebar */
                 .dashboard-sidebar {
                     width: 280px; background: white; border-right: 1px solid #e2e8f0;
@@ -273,16 +292,17 @@ export default function Dashboard() {
                 .sidebar-footer { border-top: 1px solid #e2e8f0; padding-top: 1.5rem; margin-top: auto; }
 
                 /* Main Content */
-                .dashboard-main { flex: 1; }
-                .mobile-header { display: none; padding: 1rem; background: white; border-bottom: 1px solid #e2e8f0; align-items: center; gap: 1rem; }
+                .dashboard-main { flex: 1; width: 100%; }
+                .mobile-header { display: none; padding: 1rem; background: white; border-bottom: 1px solid #e2e8f0; align-items: center; gap: 1rem; position: sticky; top: 0; z-index: 30; }
                 .mobile-menu-btn { background: none; border: none; cursor: pointer; color: #0f172a; padding: 0.25rem; }
+                .page-title { fontSize: 2rem; font-weight: 800; color: #0f172a; }
 
                 .dashboard-content { padding: 3rem; max-width: 1200px; margin: 0 auto; }
 
                 /* Stats */
                 .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; marginBottom: 2.5rem; }
                 .stat-card { background: white; padding: 1.5rem; border-radius: 1rem; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 1rem; }
-                .stat-icon { width: 3rem; height: 3rem; borderRadius: 0.75rem; display: flex; alignItems: center; justifyContent: center; }
+                .stat-icon { width: 3rem; height: 3rem; borderRadius: 0.75rem; display: flex; alignItems: center; justifyContent: center; flex-shrink: 0; }
                 .bg-blue { background: #eff6ff; } .bg-green { background: #f0fdf4; } .bg-orange { background: #ffedd5; }
                 .stat-label { color: #64748b; font-size: 0.875rem; font-weight: 500; }
                 .stat-value { font-size: 1.5rem; fontWeight: 700; color: #0f172a; line-height: 1.2; }
@@ -292,6 +312,7 @@ export default function Dashboard() {
                 .alert-card.error { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
                 .alert-card.info { background: #fff; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); flex-wrap: wrap; }
                 .alert-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
+                .alert-icon { flex-shrink: 0; }
                 
                 /* Vehicle List */
                 .vehicle-list { display: flex; flex-direction: column; gap: 1rem; }
@@ -310,7 +331,7 @@ export default function Dashboard() {
                 .vehicle-details { flex: 1; min-width: 0; }
                 .vehicle-details h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
                 .price { font-size: 1rem; font-weight: 600; color: #2563eb; margin-bottom: 0.5rem; }
-                .meta-tags { display: flex; gap: 0.75rem; color: #64748b; font-size: 0.85rem; }
+                .meta-tags { display: flex; gap: 0.75rem; color: #64748b; font-size: 0.85rem; flex-wrap: wrap; }
                 .meta-tags span { background: #f1f5f9; padding: 0.25rem 0.5rem; borderRadius: 0.25rem; }
 
                 .vehicle-actions { display: flex; gap: 0.5rem; align-items: center; }
@@ -318,8 +339,8 @@ export default function Dashboard() {
                     border: none; cursor: pointer; padding: 0.5rem; border-radius: 0.5rem; 
                     display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;
                 }
-                .action-btn.mark-sold { background: #fef2f2; color: #dc2626; padding: 0.5rem 1rem; width: 100px; }
-                .action-btn.mark-live { background: #f0fdf4; color: #16a34a; padding: 0.5rem 1rem; width: 100px; }
+                .action-btn.mark-sold { background: #fef2f2; color: #dc2626; padding: 0.5rem 1rem; width: 100px; white-space: nowrap; }
+                .action-btn.mark-live { background: #f0fdf4; color: #16a34a; padding: 0.5rem 1rem; width: 100px; white-space: nowrap; }
                 .action-btn.delete { background: transparent; color: #94a3b8; }
                 .action-btn.delete:hover { background: #fef2f2; color: #dc2626; }
                 .action-btn.view { background: #f1f5f9; color: #475569; width: 36px; height: 36px; padding: 0; }
@@ -340,16 +361,32 @@ export default function Dashboard() {
                     .mobile-close { display: block; }
                     .mobile-header { display: flex; }
                     .dashboard-content { padding: 1.5rem; }
+                    /* Tablet: 2 columns for stats */
                     .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
                 }
 
                 @media (max-width: 768px) {
-                    .stats-grid { grid-template-columns: 1fr; }
+                    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+                    .stat-card { padding: 1rem; }
+                    .stat-icon { width: 2.5rem; height: 2.5rem; }
+                    
                     .vehicle-item { flex-direction: column; align-items: stretch; gap: 1rem; }
                     .vehicle-image { width: 100%; height: 180px; }
-                    .vehicle-actions { justify-content: space-between; border-top: 1px solid #f1f5f9; padding-top: 1rem; }
+                    
+                    /* Actions row on mobile */
+                    .vehicle-actions { 
+                        justify-content: space-between; 
+                        border-top: 1px solid #f1f5f9; 
+                        padding-top: 1rem; 
+                    }
                     .action-btn.view { width: auto; padding: 0.5rem 1rem; height: auto; border-radius: 0.5rem; flex: 1; }
                     .action-btn.delete { width: auto; padding: 0.5rem 1rem; border: 1px solid #e2e8f0; }
+                }
+
+                @media (max-width: 480px) {
+                    .page-title { font-size: 1.5rem; }
+                    .stats-grid { grid-template-columns: 1fr; }
+                    .vehicle-details h3 { font-size: 1rem; }
                 }
             `}</style>
         </div>

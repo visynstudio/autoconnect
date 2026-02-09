@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Instagram, Linkedin, MapPin, Mail, Phone, ChevronRight } from 'lucide-react';
+import Logo from './Logo';
 
 export default function Footer() {
     return (
@@ -8,23 +9,9 @@ export default function Footer() {
             <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '4rem', marginBottom: '4rem' }}>
 
                 <div>
-                    <Link to="/" style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: '1', marginBottom: '1.5rem', opacity: 0.95 }}>
-                        <div style={{ fontFamily: '"Outfit", sans-serif', fontSize: '1.5rem', letterSpacing: '-0.03em', display: 'flex', alignItems: 'baseline' }}>
-                            <span style={{ fontWeight: '600', color: '#f8fafc' }}>Auto</span>
-                            <span style={{ fontWeight: '800', color: '#3b82f6' }}>Connect</span>
-                        </div>
-                        <span style={{
-                            fontFamily: '"Inter", sans-serif',
-                            fontSize: '0.65rem',
-                            fontWeight: '600',
-                            color: '#94a3b8',
-                            letterSpacing: '0.05em',
-                            marginTop: '4px',
-                            textTransform: 'uppercase'
-                        }}>
-                            Direct vehicle connections
-                        </span>
-                    </Link>
+                    <div style={{ marginBottom: '1.5rem', opacity: 0.9 }}>
+                        <Logo variant="dark" />
+                    </div>
                     <p style={{ color: '#94a3b8', lineHeight: '1.7', marginBottom: '2rem', maxWidth: '300px' }}>
                         The most trusted marketplace for buying and selling second-hand vehicles directly. No middlemen, just genuine deals.
                     </p>

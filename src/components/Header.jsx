@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Menu, X, PlusCircle, User } from 'lucide-react';
-
+import Logo from './Logo';
 
 export default function Header() {
     const [user, setUser] = useState(null);
@@ -27,59 +27,71 @@ export default function Header() {
     return (
         <header style={{
             position: 'sticky', top: 0, zIndex: 1000,
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(8px)',
+            backgroundColor: '#ffffff',
             borderBottom: '1px solid var(--border)',
-            padding: '0.75rem 0'
+            padding: '0.6rem 0',
+            transition: 'all 0.3s ease'
         }}>
             <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
-                {/* Logo (Pure Text - Professional Startup Style) */}
-                <Link to="/" style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: '1' }}>
-                    <div style={{ fontFamily: '"Outfit", sans-serif', fontSize: '1.5rem', letterSpacing: '-0.03em', display: 'flex', alignItems: 'baseline' }}>
-                        <span style={{ fontWeight: '600', color: '#0f172a' }}>Auto</span>
-                        <span style={{ fontWeight: '800', color: '#2563eb' }}>Connect</span>
-                    </div>
-                    <span style={{
-                        fontFamily: '"Inter", sans-serif',
-                        fontSize: '0.65rem',
-                        fontWeight: '600',
-                        color: '#64748b',
-                        letterSpacing: '0.05em',
-                        marginTop: '4px',
-                        textTransform: 'uppercase'
-                    }}>
-                        Direct vehicle connections
-                    </span>
-                </Link>
+                {/* New Logo Implementation */}
+                <Logo variant="light" />
 
                 {/* Desktop Nav */}
-                <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-                    <Link to="/browse" style={{ fontWeight: '500', color: 'var(--text-main)' }}>Browse Vehicles</Link>
+                <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}>
+                    <Link to="/browse" style={{
+                        fontWeight: '600',
+                        color: 'var(--text-secondary)',
+                        fontSize: '0.95rem',
+                        letterSpacing: '0.01em'
+                    }} className="nav-link">
+                        Browse Vehicles
+                    </Link>
 
                     {user ? (
                         <>
-                            <Link to="/dashboard" style={{ fontWeight: '500', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <Link to="/dashboard" style={{
+                                fontWeight: '600',
+                                color: 'var(--text-secondary)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem',
+                                fontSize: '0.95rem'
+                            }} className="nav-link">
                                 <User size={18} /> Dashboard
                             </Link>
-                            <button onClick={handleLogout} style={{ fontWeight: '500', color: 'var(--text-secondary)', background: 'none', border: 'none', cursor: 'pointer' }}>Logout</button>
-                            <Link to="/add-vehicle" className="btn btn-primary" style={{ padding: '0.6rem 1.25rem' }}>
-                                <PlusCircle size={18} /> Post Your Vehicle
+                            <button onClick={handleLogout} style={{
+                                fontWeight: '600',
+                                color: 'var(--text-muted)',
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontSize: '0.95rem',
+                                transition: 'color 0.2s'
+                            }} className="nav-link-logout">Logout</button>
+                            <Link to="/add-vehicle" className="btn btn-primary" style={{ padding: '0.6rem 1.25rem', fontSize: '0.9rem' }}>
+                                <PlusCircle size={16} /> Sell Vehicle
                             </Link>
                         </>
                     ) : (
                         <>
-                            <Link to="/seller-login" style={{ fontWeight: '600', color: 'var(--text-main)' }}>Seller Login</Link>
-                            <Link to="/seller-signup" className="btn btn-primary" style={{ padding: '0.6rem 1.25rem' }}>
-                                <PlusCircle size={18} /> Post Your Vehicle
+                            <Link to="/seller-login" style={{
+                                fontWeight: '600',
+                                color: 'var(--text-secondary)',
+                                fontSize: '0.95rem'
+                            }} className="nav-link">
+                                Log in
+                            </Link>
+                            <Link to="/seller-signup" className="btn btn-primary" style={{ padding: '0.6rem 1.25rem', fontSize: '0.9rem' }}>
+                                Start Selling
                             </Link>
                         </>
                     )}
                 </nav>
 
                 {/* Mobile Menu Toggle */}
-                <div className="mobile-toggle" style={{ display: 'none', cursor: 'pointer' }} onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                    {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+                <div className="mobile-toggle" style={{ display: 'none', cursor: 'pointer', color: 'var(--text-main)' }} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </div>
             </div>
 
@@ -88,32 +100,34 @@ export default function Header() {
                 <div style={{
                     position: 'absolute', top: '100%', left: 0, right: 0,
                     backgroundColor: 'white', borderBottom: '1px solid var(--border)',
-                    padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem',
-                    boxShadow: 'var(--shadow-lg)'
+                    padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem',
+                    boxShadow: 'var(--shadow-lg)',
+                    zIndex: 999
                 }}>
-                    <Link to="/browse" onClick={() => setIsMenuOpen(false)}>Browse Vehicles</Link>
+                    <Link to="/browse" onClick={() => setIsMenuOpen(false)} style={{ fontWeight: '600', color: 'var(--text-main)' }}>Browse Vehicles</Link>
                     {user ? (
                         <>
-                            <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
-                            <button onClick={() => { handleLogout(); setIsMenuOpen(false); }} style={{ textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Logout</button>
+                            <Link to="/dashboard" onClick={() => setIsMenuOpen(false)} style={{ fontWeight: '600', color: 'var(--text-main)' }}>Dashboard</Link>
+                            <button onClick={() => { handleLogout(); setIsMenuOpen(false); }} style={{ textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: '600', color: 'var(--text-muted)' }}>Logout</button>
                         </>
                     ) : (
-                        <Link to="/seller-login" onClick={() => setIsMenuOpen(false)}>Seller Login</Link>
+                        <Link to="/seller-login" onClick={() => setIsMenuOpen(false)} style={{ fontWeight: '600', color: 'var(--text-main)' }}>Log in</Link>
                     )}
-                    <Link to={user ? "/add-vehicle" : "/seller-signup"} className="btn btn-primary" onClick={() => setIsMenuOpen(false)}>
-                        Post Your Vehicle
+                    <Link to={user ? "/add-vehicle" : "/seller-signup"} className="btn btn-primary" onClick={() => setIsMenuOpen(false)} style={{ justifyContent: 'center' }}>
+                        {user ? 'Sell Vehicle' : 'Start Selling'}
                     </Link>
                 </div>
             )}
 
             {/* Responsive Styles Injection */}
             <style>{`
-        @media (max-width: 768px) {
-          .desktop-nav { display: none !important; }
-          .mobile-toggle { display: block !important; }
-          .logo-img { height: 28px !important; }
-        }
-      `}</style>
+                .nav-link:hover { color: var(--text-main) !important; }
+                .nav-link-logout:hover { color: var(--text-main) !important; }
+                @media (max-width: 768px) {
+                  .desktop-nav { display: none !important; }
+                  .mobile-toggle { display: block !important; }
+                }
+            `}</style>
         </header>
     );
 }

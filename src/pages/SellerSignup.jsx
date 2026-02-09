@@ -21,36 +21,45 @@ export default function SellerSignup() {
 
         try {
             // 1. Sign up auth user
-            const { data: { user }, error: authError } = await supabase.auth.signUp({
+            const { data: { user, session }, error: authError } = await supabase.auth.signUp({
                 email: formData.email,
                 password: formData.password,
+                options: {
+                    data: {
+                        name: formData.name,
+                        phone: formData.phone,
+                        city: formData.city
+                    }
+                }
             });
 
             if (authError) throw authError;
 
             if (user) {
                 // 2. Insert into sellers table
-                // Note: use upsert mostly harmless for id collision, but insert is safer for logic check
+                // Using upsert to handle cases where a trigger might have already created the row
                 const { error: dbError } = await supabase
                     .from('sellers')
-                    .insert([{
+                    .upsert({
                         id: user.id,
                         name: formData.name,
                         phone: formData.phone,
-                        city: formData.city
-                    }]);
+                        city: formData.city,
+                        created_at: new Date().toISOString()
+                    }, { onConflict: 'id' });
 
                 if (dbError) {
-                    // If profile fails, we might want to delete the user or handle it. 
-                    // For now just show error.
-                    throw dbError;
+                    console.error('Error saving seller details:', dbError);
+                    // If profile fails, alert user but don't block flow completely if auth worked
+                    alert('Account created, but profile details failed specific save. Please update in Dashboard.');
                 }
 
                 alert('Signup successful! Redirecting to dashboard...');
                 navigate('/dashboard');
             }
         } catch (error) {
-            alert(error.message);
+            console.error('Signup error:', error);
+            alert(error.message || 'An error occurred during signup');
         } finally {
             setLoading(false);
         }
