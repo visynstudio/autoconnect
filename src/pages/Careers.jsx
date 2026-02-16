@@ -13,126 +13,192 @@ const positions = [
 
 export default function Careers() {
     return (
-        <div style={{ backgroundColor: '#ffffff', color: '#1e293b' }}>
-
+        <div className="careers-page-wrapper">
             {/* 1. Header */}
-            <section style={{ backgroundColor: '#f8fafc', padding: '5rem 1rem', textAlign: 'center', borderBottom: '1px solid #e2e8f0' }}>
-                <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    <h1 style={{ fontSize: '3rem', fontWeight: '800', color: '#0f172a', marginBottom: '1rem', letterSpacing: '-1px' }}>
-                        Careers
-                    </h1>
-                    <p style={{ fontSize: '1.25rem', color: '#64748b', fontWeight: '500' }}>
-                        Build the future of vehicle marketplaces with us.
-                    </p>
+            <header className="page-header section-bg">
+                <div className="container">
+                    <h1 className="page-title">Build the Future</h1>
+                    <p className="page-subtitle">Join us in our mission to create India's most trusted and transparent vehicle marketplace.</p>
                 </div>
-            </section>
+            </header>
 
-            {/* 2. Intro */}
-            <section style={{ padding: '5rem 1rem' }}>
-                <div className="container" style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-                    <h2 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '1.5rem', color: '#0f172a' }}>
-                        Join Our Mission
-                    </h2>
-                    <p style={{ fontSize: '1.125rem', lineHeight: '1.8', color: '#475569' }}>
-                        We are building a simple, transparent, and trusted platform that connects vehicle buyers and sellers directly.
-                        We believe in removing friction, empowering users, and creating a marketplace that just works.
-                    </p>
-                </div>
-            </section>
+            {/* 2. Culture/Values */}
+            <section className="section">
+                <div className="container">
+                    <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+                        <h2 className="section-title">Why Join ApniCar?</h2>
+                        <p className="section-desc">We're a team of builders, dreamers, and doers working together to solve real-world problems.</p>
+                    </div>
 
-            {/* 3. Why Work With Us */}
-            <section style={{ padding: '5rem 1rem', backgroundColor: '#f1f5f9' }}>
-                <div className="container" style={{ maxWidth: '1000px', margin: '0 auto' }}>
-                    <h2 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '3rem', color: '#0f172a', textAlign: 'center' }}>
-                        Why Work With Us
-                    </h2>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
+                    <div className="grid-2-2-1">
                         {[
-                            { icon: Zap, title: 'Fast-Growing Startup', desc: 'Work in a high-energy environment where your impact is immediate and visible.' },
-                            { icon: Heart, title: 'Impactful Product', desc: 'Solve real problems for thousands of people buying and selling their vehicles.' },
-                            { icon: UserPlus, title: 'Learning First', desc: 'We value curiosity and growth. You will be challenged to learn and evolve every day.' },
-                            { icon: Globe, title: 'Remote-Friendly', desc: 'We focus on output, not hours or location. Work from where you are most productive.' },
+                            { icon: Zap, title: 'Extreme Ownership', desc: 'We trust our team to take the lead. You own your projects from ideation to deployment.' },
+                            { icon: Heart, title: 'Impact at Scale', desc: 'Every line of code you write and every design you create affects thousands of users across India.' },
+                            { icon: UserPlus, title: 'Learning Culture', desc: 'We invest in your growth with mentorship, resources, and a focus on continuous learning.' },
+                            { icon: Globe, title: 'Remote First', desc: 'We believe productivity isn\'t tied to an office. Work from wherever you feel inspired.' },
                         ].map((item, index) => (
-                            <div key={index} style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '1rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
-                                <div style={{ marginBottom: '1.5rem', display: 'inline-flex', padding: '0.75rem', borderRadius: '0.75rem', backgroundColor: '#eff6ff', color: '#2563eb' }}>
-                                    <item.icon size={24} />
+                            <div key={index} className="culture-card card">
+                                <div className="culture-icon-box">
+                                    <item.icon size={26} strokeWidth={1.5} />
                                 </div>
-                                <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.75rem', color: '#0f172a' }}>{item.title}</h3>
-                                <p style={{ color: '#64748b', fontSize: '0.95rem', lineHeight: '1.6' }}>{item.desc}</p>
+                                <h3 className="culture-title">{item.title}</h3>
+                                <p className="culture-text">{item.desc}</p>
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* 4. Open Positions */}
-            <section id="positions" style={{ padding: '5rem 1rem' }}>
-                <div className="container" style={{ maxWidth: '900px', margin: '0 auto' }}>
-                    <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-                        <h2 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem', color: '#0f172a' }}>Open Positions</h2>
-                        <p style={{ color: '#64748b' }}>Check out our current job openings.</p>
+            {/* 3. Open Positions */}
+            <section className="section section-bg">
+                <div className="container" style={{ maxWidth: '900px' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+                        <h2 className="section-title">Open Positions</h2>
+                        <p className="section-desc">Current opportunities to join our remote-friendly team.</p>
                     </div>
 
                     {positions.length > 0 ? (
-                        <div style={{ display: 'grid', gap: '1.5rem' }}>
+                        <div className="jobs-stack">
                             {positions.map((job) => (
-                                <div key={job.id} style={{
-                                    display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem',
-                                    padding: '1.5rem 2rem', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '0.75rem',
-                                    transition: 'all 0.2s ease', cursor: 'pointer'
-                                }}
-                                    onMouseOver={(e) => { e.currentTarget.style.borderColor = '#94a3b8'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                                    onMouseOut={(e) => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.transform = 'translateY(0)'; }}
-                                >
-                                    <div>
-                                        <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#0f172a', marginBottom: '0.5rem' }}>{job.title}</h3>
-                                        <div style={{ display: 'flex', gap: '1.5rem', color: '#64748b', fontSize: '0.9rem' }}>
-                                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Briefcase size={16} /> {job.department}</span>
-                                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Clock size={16} /> {job.type}</span>
-                                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><MapPin size={16} /> {job.location}</span>
+                                <div key={job.id} className="job-card card animate-fade-in">
+                                    <div className="job-meta">
+                                        <h3 className="job-title">{job.title}</h3>
+                                        <div className="job-tags">
+                                            <span><Briefcase size={16} /> {job.department}</span>
+                                            <span><Clock size={16} /> {job.type}</span>
+                                            <span><MapPin size={16} /> {job.location}</span>
                                         </div>
                                     </div>
-                                    <button className="btn btn-secondary" style={{ borderRadius: '0.5rem', padding: '0.6rem 1.2rem', fontSize: '0.9rem' }}>
-                                        Apply Now <ArrowRight size={16} />
+                                    <button className="btn btn-primary job-apply-btn">
+                                        Apply Now <ArrowRight size={18} />
                                     </button>
                                 </div>
                             ))}
                         </div>
                     ) : (
-                        // 5. No Openings State
-                        <div style={{ textAlign: 'center', padding: '4rem 1rem', backgroundColor: '#f8fafc', borderRadius: '1rem', border: '1px solid dashed #cbd5e1' }}>
-                            <div style={{ marginBottom: '1.5rem', color: '#94a3b8' }}>
-                                <Briefcase size={48} strokeWidth={1.5} />
+                        <div className="empty-careers card">
+                            <div className="empty-icon-box">
+                                <Briefcase size={48} strokeWidth={1} />
                             </div>
-                            <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#0f172a', marginBottom: '0.75rem' }}>No Open Positons Right Now</h3>
-                            <p style={{ color: '#64748b', maxWidth: '500px', margin: '0 auto 1.5rem' }}>
-                                We're not actively hiring at the moment, but we're always looking for talented individuals.
-                                Send your resume to our team.
+                            <h3 className="empty-title">No Active Openings</h3>
+                            <p className="empty-text">
+                                We're not actively hiring right now, but we're always looking for exceptional talent.
+                                Send your portfolio to our team.
                             </p>
-                            <a href="mailto:careers@automarket.com" className="btn btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <Mail size={18} /> Email Your Resume
+                            <a href="mailto:careers@apnicar.com" className="btn btn-outline">
+                                <Mail size={18} />
+                                <span>Send Resume</span>
                             </a>
                         </div>
                     )}
                 </div>
             </section>
 
-            {/* 6. Footer CTA */}
-            <section style={{ backgroundColor: '#0f172a', padding: '4rem 1rem', textAlign: 'center', color: 'white' }}>
-                <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
-                    <h2 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '1rem' }}>
-                        Interested in working with us?
-                    </h2>
-                    <p style={{ fontSize: '1.1rem', color: '#94a3b8', marginBottom: '2.5rem' }}>
-                        We’d love to hear from you. Reach out even if you don't see a role that fits.
-                    </p>
-                    <a href="mailto:hello@automarket.com" className="btn btn-primary" style={{ backgroundColor: 'white', color: '#0f172a', padding: '1rem 2.5rem', fontWeight: '700' }}>
-                        Contact Us
-                    </a>
+            {/* 4. Secondary CTA */}
+            <section className="section">
+                <div className="container">
+                    <div className="talent-pool-box card">
+                        <h2 className="talent-title">Not seeing your role?</h2>
+                        <p className="talent-text">We're always open to meeting passionate people who believe in our mission.</p>
+                        <a href="mailto:hello@apnicar.com" className="btn btn-primary" style={{ minWidth: '220px' }}>
+                            Get in Touch
+                        </a>
+                    </div>
                 </div>
             </section>
 
+            <style>{`
+                .careers-page-wrapper {
+                    background-color: var(--bg-page);
+                }
+
+                .section-title {
+                    font-size: 2.25rem;
+                    font-weight: 800;
+                    color: var(--primary);
+                    margin-bottom: 1rem;
+                }
+
+                .section-desc {
+                    font-size: 1.15rem;
+                    color: var(--text-secondary);
+                    max-width: 700px;
+                    margin: 0 auto;
+                }
+
+                .culture-card {
+                    padding: 3rem 2rem !important;
+                    text-align: center;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1.5rem;
+                }
+
+                .culture-icon-box {
+                    width: 64px;
+                    height: 64px;
+                    background: var(--bg-subtle);
+                    color: var(--accent);
+                    border-radius: 16px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .culture-title { font-size: 1.35rem; font-weight: 800; color: var(--primary); }
+                .culture-text { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.6; }
+
+                .jobs-stack {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.5rem;
+                }
+
+                .job-card {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 2rem !important;
+                }
+
+                .job-title { font-size: 1.25rem; font-weight: 800; color: var(--primary); margin-bottom: 0.75rem; }
+                .job-tags { display: flex; gap: 1.5rem; color: var(--text-secondary); font-size: 0.9rem; font-weight: 700; }
+                .job-tags span { display: flex; align-items: center; gap: 0.5rem; }
+
+                .job-apply-btn { height: 48px; padding: 0 1.5rem; border-radius: 10px; }
+
+                .empty-careers {
+                    text-align: center;
+                    padding: 5rem 2rem !important;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1.5rem;
+                }
+
+                .empty-icon-box { color: var(--text-muted); }
+                .empty-title { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+                .empty-text { font-size: 1.1rem; color: var(--text-secondary); max-width: 500px; line-height: 1.6; }
+
+                .talent-pool-box {
+                    text-align: center;
+                    padding: 5rem 2rem !important;
+                    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+                    color: #ffffff;
+                    border: none;
+                }
+
+                .talent-title { font-size: 2.25rem; font-weight: 800; margin-bottom: 1rem; }
+                .talent-text { font-size: 1.25rem; color: #94a3b8; margin-bottom: 2.5rem; }
+
+                @media (max-width: 768px) {
+                    .job-card { flex-direction: column; align-items: stretch; gap: 1.5rem; }
+                    .job-tags { flex-direction: column; gap: 0.5rem; }
+                    .job-apply-btn { width: 100%; }
+                    .talent-title { font-size: 1.75rem; }
+                }
+            `}</style>
         </div>
     );
 }

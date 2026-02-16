@@ -20,7 +20,7 @@ function App() {
   return (
     <>
       <Header />
-      <main style={{ minHeight: 'calc(100vh - 80px)' }}> {/* Adjusted for header height */}
+      <main style={{ minHeight: 'calc(100vh - 64px)' }}> {/* Adjusted for new header height */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/browse" element={<Browse />} />

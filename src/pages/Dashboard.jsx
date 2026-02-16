@@ -97,8 +97,7 @@ export default function Dashboard() {
     const isLimitReached = liveCount >= 5;
 
     return (
-        <div className="dashboard-layout">
-
+        <div className="dashboard-container">
             {/* Mobile Sidebar Overlay */}
             <div
                 className={`sidebar-overlay ${isSidebarOpen ? 'open' : ''}`}
@@ -108,31 +107,34 @@ export default function Dashboard() {
             {/* SIDEBAR */}
             <aside className={`dashboard-sidebar ${isSidebarOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
-                    <span style={{ fontWeight: '700', fontSize: '1.25rem', color: '#0f172a' }}>My Seller Hub</span>
+                    <span className="sidebar-brand">Seller Center</span>
                     <button className="mobile-close" onClick={() => setSidebarOpen(false)}><X size={24} /></button>
                 </div>
 
                 <nav className="sidebar-nav">
-                    <Link to="/dashboard" className="nav-item active">
-                        <LayoutDashboard size={20} /> Dashboard
+                    <Link to="/dashboard" className={`nav-item ${location.pathname === '/dashboard' ? 'active' : ''}`}>
+                        <LayoutDashboard size={20} />
+                        <span>Overview</span>
                     </Link>
                     <Link to="/add-vehicle" className={`nav-item ${isLimitReached ? 'disabled' : ''}`}>
-                        <PlusCircle size={20} /> Add Vehicle
+                        <PlusCircle size={20} />
+                        <span>Add Vehicle</span>
                     </Link>
                     <div className="nav-divider"></div>
                     <button onClick={handleLogout} className="nav-item logout">
-                        <LogOut size={20} /> Logout
+                        <LogOut size={20} />
+                        <span>Sign Out</span>
                     </button>
                 </nav>
 
-                <div className="sidebar-footer">
-                    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                        <div style={{ width: '40px', height: '40px', background: '#e2e8f0', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <User size={20} color="#64748b" />
+                <div className="sidebar-profile">
+                    <div className="profile-inner">
+                        <div className="profile-avatar">
+                            <User size={20} />
                         </div>
-                        <div style={{ overflow: 'hidden' }}>
-                            <p style={{ fontSize: '0.9rem', fontWeight: '600', color: '#0f172a', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{sellerProfile?.name || 'Seller'}</p>
-                            <p style={{ fontSize: '0.75rem', color: '#64748b' }}>{sellerProfile?.city}</p>
+                        <div className="profile-meta">
+                            <p className="profile-name">{sellerProfile?.name || 'Seller'}</p>
+                            <p className="profile-loc">{sellerProfile?.city}</p>
                         </div>
                     </div>
                 </div>
@@ -140,111 +142,117 @@ export default function Dashboard() {
 
             {/* MAIN CONTENT */}
             <main className="dashboard-main">
-                {/* Mobile Header */}
-                <div className="mobile-header">
-                    <button onClick={() => setSidebarOpen(true)} className="mobile-menu-btn"><LayoutDashboard size={24} /></button>
-                    <span style={{ fontWeight: '700', fontSize: '1.1rem' }}>Dashboard</span>
+                {/* Mobile Header Bar */}
+                <div className="mobile-header-bar">
+                    <button onClick={() => setSidebarOpen(true)} className="mobile-trigger">
+                        <LayoutDashboard size={24} />
+                    </button>
+                    <span className="mobile-title">Dashboard</span>
                 </div>
 
                 <div className="dashboard-content">
-                    <div style={{ marginBottom: '2rem' }}>
-                        <h1 className="page-title">Overview</h1>
-                        <p style={{ color: '#64748b' }}>Manage your listings and account status.</p>
-                    </div>
+                    <header className="content-header">
+                        <div>
+                            <h1 className="page-title">Listing Dashboard</h1>
+                            <p className="page-subtitle">Welcome back, {sellerProfile?.name?.split(' ')[0] || 'Seller'}</p>
+                        </div>
+                        <Link to="/add-vehicle" className={`btn btn-primary dash-cta-btn ${isLimitReached ? 'disabled' : ''}`}>
+                            <PlusCircle size={20} />
+                            <span>Post New Ad</span>
+                        </Link>
+                    </header>
 
-                    {/* Stats Grid */}
-                    <div className="stats-grid">
+                    {/* Stats Section */}
+                    <div className="stats-row">
                         <div className="stat-card">
-                            <div className="stat-icon bg-blue"><Car size={24} color="#2563eb" /></div>
-                            <div>
-                                <p className="stat-label">Total Listings</p>
-                                <p className="stat-value">{totalCount}</p>
+                            <div className="stat-icon-box blue">
+                                <Car size={24} />
+                            </div>
+                            <div className="stat-info">
+                                <span className="stat-label">Total Listings</span>
+                                <span className="stat-value">{totalCount}</span>
                             </div>
                         </div>
                         <div className="stat-card">
-                            <div className="stat-icon bg-green"><Eye size={24} color="#16a34a" /></div>
-                            <div>
-                                <p className="stat-label">Active Listings</p>
-                                <p className="stat-value">{liveCount}</p>
+                            <div className="stat-icon-box green">
+                                <Eye size={24} />
+                            </div>
+                            <div className="stat-info">
+                                <span className="stat-label">Active Now</span>
+                                <span className="stat-value">{liveCount}</span>
                             </div>
                         </div>
                         <div className="stat-card">
-                            <div className="stat-icon bg-orange"><PlusCircle size={24} color="#f97316" /></div>
-                            <div>
-                                <p className="stat-label">Slots Remaining</p>
-                                <p className="stat-value" style={{ color: remainingSlots === 0 ? '#ef4444' : '#0f172a' }}>{remainingSlots}</p>
+                            <div className="stat-icon-box orange">
+                                <AlertCircle size={24} />
+                            </div>
+                            <div className="stat-info">
+                                <span className="stat-label">Slots Left</span>
+                                <span className="stat-value" style={{ color: remainingSlots === 0 ? 'var(--error)' : 'inherit' }}>
+                                    {remainingSlots}
+                                </span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Alert / CTA */}
-                    <div style={{ marginBottom: '2.5rem' }}>
-                        {isLimitReached ? (
-                            <div className="alert-card error">
-                                <AlertCircle size={24} className="alert-icon" />
-                                <div>
-                                    <h3>Limit Reached</h3>
-                                    <p>You have 5 active listings. Mark some as sold to add more.</p>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="alert-card info">
-                                <div>
-                                    <h3>Boost Your Sales</h3>
-                                    <p>List a new vehicle today and reach thousands of buyers.</p>
-                                </div>
-                                <Link to="/add-vehicle" className="btn btn-primary">Post New Vehicle</Link>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Listings Table/List */}
-                    <div>
-                        <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '1.5rem', color: '#0f172a' }}>My Listings</h2>
+                    {/* Content Body */}
+                    <div className="content-body">
+                        <div className="body-header">
+                            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--primary)' }}>My Managed Listings</h2>
+                        </div>
 
                         {vehicles.length === 0 ? (
-                            <div className="empty-state">
-                                <Car size={48} color="#cbd5e1" strokeWidth={1.5} />
-                                <h3>No listings yet</h3>
-                                <p>Get started by adding your first vehicle.</p>
-                                <Link to="/add-vehicle" className="btn btn-outline">Create Listing</Link>
+                            <div className="empty-state-v3">
+                                <div className="empty-v3-icon">
+                                    <Car size={48} strokeWidth={1} />
+                                </div>
+                                <h3>No listings created yet</h3>
+                                <p>Start selling by posting your first vehicle listing.</p>
+                                <Link to="/add-vehicle" className="btn btn-outline">Add Your First Vehicle</Link>
                             </div>
                         ) : (
-                            <div className="vehicle-list">
+                            <div className="listings-stack">
                                 {vehicles.map(vehicle => (
-                                    <div key={vehicle.id} className="vehicle-item">
-                                        <div className="vehicle-image">
+                                    <div key={vehicle.id} className="listing-card card">
+                                        <div className="listing-thumb">
                                             <img
-                                                src={vehicle.vehicle_images?.[0]?.image_url || 'https://placehold.co/200?text=No+Image'}
+                                                src={vehicle.vehicle_images?.[0]?.image_url || 'https://placehold.co/400x300?text=No+Photo'}
                                                 alt={vehicle.model}
                                             />
-                                            <span className={`status-badge ${vehicle.is_live ? 'live' : 'sold'}`}>
-                                                {vehicle.is_live ? 'LIVE' : 'SOLD'}
-                                            </span>
+                                            <div className={`listing-badge ${vehicle.is_live ? 'is-live' : 'is-sold'}`}>
+                                                {vehicle.is_live ? 'ACTIVE' : 'OFFLINE'}
+                                            </div>
                                         </div>
 
-                                        <div className="vehicle-details">
-                                            <h3>{vehicle.year} {vehicle.brand} {vehicle.model}</h3>
-                                            <p className="price">
-                                                {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(vehicle.price)}
-                                            </p>
-                                            <div className="meta-tags">
-                                                <span>{vehicle.km_driven} km</span>
+                                        <div className="listing-info">
+                                            <div className="listing-main">
+                                                <h3 className="listing-title">{vehicle.year} {vehicle.brand} {vehicle.model}</h3>
+                                                <p className="listing-price">
+                                                    {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(vehicle.price)}
+                                                </p>
+                                            </div>
+                                            <div className="listing-tags">
+                                                <span>{vehicle.km_driven.toLocaleString()} km</span>
                                                 <span>{vehicle.fuel_type}</span>
                                                 <span>{vehicle.location}</span>
                                             </div>
                                         </div>
 
-                                        <div className="vehicle-actions">
-                                            <button onClick={() => toggleLive(vehicle)} className={`action-btn ${vehicle.is_live ? 'mark-sold' : 'mark-live'}`}>
-                                                {vehicle.is_live ? 'Mark Sold' : 'Activate'}
+                                        <div className="listing-actions">
+                                            <button
+                                                onClick={() => toggleLive(vehicle)}
+                                                className={`btn dash-action-btn ${vehicle.is_live ? 'btn-deactivate' : 'btn-activate'}`}
+                                            >
+                                                {vehicle.is_live ? 'Mark Sold' : 'Relist'}
                                             </button>
-                                            <button onClick={() => handleDelete(vehicle.id)} className="action-btn delete" title="Delete">
-                                                <Trash2 size={18} />
-                                            </button>
-                                            <Link to={`/vehicle/${vehicle.id}`} className="action-btn view" title="View">
-                                                <ChevronRight size={20} />
-                                            </Link>
+                                            <div className="action-icons">
+                                                <Link to={`/vehicle/${vehicle.id}`} className="icon-btn-dash info" title="Preview">
+                                                    <Eye size={18} />
+                                                </Link>
+                                                <button onClick={() => handleDelete(vehicle.id)} className="icon-btn-dash danger" title="Delete">
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
@@ -255,138 +263,265 @@ export default function Dashboard() {
             </main>
 
             <style>{`
-                .dashboard-layout { display: flex; min-height: 100vh; background: #f8fafc; position: relative; }
-                
-                /* Sidebar Overlay */
-                .sidebar-overlay {
-                    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-                    background: rgba(0,0,0,0.4); z-index: 40;
-                    opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-                    backdrop-filter: blur(2px);
+                .dashboard-container {
+                    display: flex;
+                    min-height: 100vh;
+                    background-color: var(--bg-subtle);
                 }
-                .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
 
                 /* Sidebar */
                 .dashboard-sidebar {
-                    width: 280px; background: white; border-right: 1px solid #e2e8f0;
-                    display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0;
-                    padding: 1.5rem; transition: transform 0.3s ease; z-index: 50;
+                    width: 280px;
+                    background: #ffffff;
+                    border-right: 1px solid var(--border);
+                    display: flex;
+                    flex-direction: column;
+                    position: sticky;
+                    top: 0;
+                    height: 100vh;
+                    z-index: 100;
+                    transition: transform 0.3s ease;
                 }
-                .sidebar-header { margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: center; }
-                .mobile-close { display: none; background: none; border: none; cursor: pointer; color: #64748b; }
-                
-                .sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+
+                .sidebar-header {
+                    padding: 2rem 1.5rem;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+
+                .sidebar-brand {
+                    font-size: 1.25rem;
+                    font-weight: 800;
+                    color: var(--primary);
+                    letter-spacing: -0.02em;
+                }
+
+                .sidebar-nav {
+                    padding: 0 1rem;
+                    flex: 1;
+                }
+
                 .nav-item {
-                    display: flex; alignItems: center; gap: 0.75rem; padding: 0.85rem 1rem;
-                    border-radius: 0.5rem; color: #64748b; font-weight: 500; transition: all 0.2s;
-                    text-decoration: none; border: none; background: none; width: 100%; text-align: left; font-size:1rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                    padding: 0.85rem 1rem;
+                    border-radius: 12px;
+                    color: var(--text-secondary);
+                    font-weight: 700;
+                    text-decoration: none;
+                    margin-bottom: 0.5rem;
+                    transition: all 0.2s;
+                    border: none;
+                    background: transparent;
+                    width: 100%;
+                    text-align: left;
                     cursor: pointer;
+                    font-size: 0.95rem;
                 }
-                .nav-item:hover { background: #f1f5f9; color: #0f172a; }
-                .nav-item.active { background: #eff6ff; color: #2563eb; font-weight: 600; }
-                .nav-item.disabled { opacity: 0.5; pointer-events: none; }
-                .nav-item.logout { color: #ef4444; }
-                .nav-item.logout:hover { background: #fef2f2; }
-                .nav-divider { border-top: 1px solid #e2e8f0; margin: 1rem 0; }
-                
-                .sidebar-footer { border-top: 1px solid #e2e8f0; padding-top: 1.5rem; margin-top: auto; }
+
+                .nav-item:hover {
+                    background: var(--bg-subtle);
+                    color: var(--primary);
+                }
+
+                .nav-item.active {
+                    background: var(--accent);
+                    color: #ffffff;
+                }
+
+                .nav-item.logout {
+                    color: #ef4444;
+                    margin-top: 1rem;
+                }
+
+                .nav-item.logout:hover {
+                    background: #fee2e2;
+                }
+
+                .nav-divider {
+                    height: 1px;
+                    background: var(--border);
+                    margin: 1.5rem 1rem;
+                }
+
+                .sidebar-profile {
+                    padding: 1.5rem;
+                    border-top: 1px solid var(--border);
+                }
+
+                .profile-inner {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    background: var(--bg-subtle);
+                    padding: 0.75rem;
+                    border-radius: 12px;
+                }
+
+                .profile-avatar {
+                    width: 40px;
+                    height: 40px;
+                    background: var(--primary);
+                    color: #ffffff;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .profile-name { font-weight: 800; font-size: 0.85rem; color: var(--primary); margin: 0; }
+                .profile-loc { font-size: 0.75rem; color: var(--text-muted); margin: 0; }
 
                 /* Main Content */
-                .dashboard-main { flex: 1; width: 100%; }
-                .mobile-header { display: none; padding: 1rem; background: white; border-bottom: 1px solid #e2e8f0; align-items: center; gap: 1rem; position: sticky; top: 0; z-index: 30; }
-                .mobile-menu-btn { background: none; border: none; cursor: pointer; color: #0f172a; padding: 0.25rem; }
-                .page-title { fontSize: 2rem; font-weight: 800; color: #0f172a; }
-
-                .dashboard-content { padding: 3rem; max-width: 1200px; margin: 0 auto; }
-
-                /* Stats */
-                .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; marginBottom: 2.5rem; }
-                .stat-card { background: white; padding: 1.5rem; border-radius: 1rem; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 1rem; }
-                .stat-icon { width: 3rem; height: 3rem; borderRadius: 0.75rem; display: flex; alignItems: center; justifyContent: center; flex-shrink: 0; }
-                .bg-blue { background: #eff6ff; } .bg-green { background: #f0fdf4; } .bg-orange { background: #ffedd5; }
-                .stat-label { color: #64748b; font-size: 0.875rem; font-weight: 500; }
-                .stat-value { font-size: 1.5rem; fontWeight: 700; color: #0f172a; line-height: 1.2; }
-
-                /* Alert */
-                .alert-card { padding: 1.5rem; border-radius: 1rem; display: flex; align-items: center; gap: 1.5rem; justify-content: space-between; }
-                .alert-card.error { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
-                .alert-card.info { background: #fff; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); flex-wrap: wrap; }
-                .alert-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
-                .alert-icon { flex-shrink: 0; }
-                
-                /* Vehicle List */
-                .vehicle-list { display: flex; flex-direction: column; gap: 1rem; }
-                .vehicle-item { 
-                    background: white; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 1rem;
-                    display: flex; gap: 1.5rem; align-items: center; transition: all 0.2s;
+                .dashboard-main {
+                    flex: 1;
+                    min-width: 0;
                 }
-                .vehicle-item:hover { border-color: #cbd5e1; transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-                
-                .vehicle-image { width: 140px; height: 100px; border-radius: 0.75rem; overflow: hidden; position: relative; background: #f1f5f9; flex-shrink: 0; }
-                .vehicle-image img { width: 100%; height: 100%; object-fit: cover; }
-                .status-badge { position: absolute; top: 0.5rem; left: 0.5rem; font-size: 0.65rem; font-weight: 700; padding: 0.25rem 0.5rem; borderRadius: 0.25rem; text-transform: uppercase; }
-                .status-badge.live { background: rgba(22, 163, 74, 0.9); color: white; }
-                .status-badge.sold { background: rgba(15, 23, 42, 0.9); color: white; }
 
-                .vehicle-details { flex: 1; min-width: 0; }
-                .vehicle-details h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-                .price { font-size: 1rem; font-weight: 600; color: #2563eb; margin-bottom: 0.5rem; }
-                .meta-tags { display: flex; gap: 0.75rem; color: #64748b; font-size: 0.85rem; flex-wrap: wrap; }
-                .meta-tags span { background: #f1f5f9; padding: 0.25rem 0.5rem; borderRadius: 0.25rem; }
-
-                .vehicle-actions { display: flex; gap: 0.5rem; align-items: center; }
-                .action-btn { 
-                    border: none; cursor: pointer; padding: 0.5rem; border-radius: 0.5rem; 
-                    display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;
+                .dashboard-content {
+                    padding: 3rem;
+                    max-width: 1200px;
                 }
-                .action-btn.mark-sold { background: #fef2f2; color: #dc2626; padding: 0.5rem 1rem; width: 100px; white-space: nowrap; }
-                .action-btn.mark-live { background: #f0fdf4; color: #16a34a; padding: 0.5rem 1rem; width: 100px; white-space: nowrap; }
-                .action-btn.delete { background: transparent; color: #94a3b8; }
-                .action-btn.delete:hover { background: #fef2f2; color: #dc2626; }
-                .action-btn.view { background: #f1f5f9; color: #475569; width: 36px; height: 36px; padding: 0; }
-                .action-btn.view:hover { background: #e2e8f0; color: #0f172a; }
 
-                .empty-state { text-align: center; padding: 4rem 2rem; background: white; border: 1px dashed #e2e8f0; borderRadius: 1rem; }
-                .empty-state h3 { margin-top: 1rem; font-size: 1.25rem; font-weight: 700; color: #0f172a; }
-                .empty-state p { color: #64748b; margin-bottom: 1.5rem; }
-                .btn-outline { border: 1px solid #e2e8f0; background: white; color: #0f172a; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; text-decoration: none; display: inline-block; }
+                .content-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-end;
+                    margin-bottom: 3rem;
+                }
 
-                /* Responsive */
+                /* Stats Row */
+                .stats-row {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 1.5rem;
+                    margin-bottom: 3rem;
+                }
+
+                .stat-card {
+                    background: #ffffff;
+                    padding: 1.5rem;
+                    border-radius: 12px;
+                    border: 1px solid var(--border);
+                    display: flex;
+                    align-items: center;
+                    gap: 1.25rem;
+                    box-shadow: var(--shadow-sm);
+                }
+
+                .stat-icon-box {
+                    width: 54px;
+                    height: 54px;
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .stat-icon-box.blue { background: #eff6ff; color: #2563eb; }
+                .stat-icon-box.green { background: #f0fdf4; color: #16a34a; }
+                .stat-icon-box.orange { background: #fff7ed; color: #f97316; }
+
+                .stat-label { display: block; font-size: 0.85rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+                .stat-value { font-size: 1.75rem; font-weight: 800; color: var(--primary); line-height: 1.2; }
+
+                /* Listings Stack */
+                .listings-stack {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                .listing-card {
+                    display: flex;
+                    gap: 1.5rem;
+                    padding: 1rem !important;
+                    align-items: center;
+                }
+
+                .listing-thumb {
+                    width: 140px;
+                    height: 100px;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    position: relative;
+                    flex-shrink: 0;
+                    background: var(--bg-subtle);
+                }
+
+                .listing-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+                .listing-badge {
+                    position: absolute;
+                    top: 6px;
+                    left: 6px;
+                    font-size: 0.65rem;
+                    font-weight: 800;
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    color: #ffffff;
+                }
+
+                .listing-badge.is-live { background: #16a34a; }
+                .listing-badge.is-sold { background: #475569; }
+
+                .listing-info { flex: 1; min-width: 0; }
+                .listing-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); margin-bottom: 0.35rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+                .listing-price { font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem; }
+
+                .listing-tags { display: flex; gap: 0.5rem; }
+                .listing-tags span { background: var(--bg-subtle); color: var(--text-secondary); font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 6px; }
+
+                .listing-actions {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                }
+
+                .dash-action-btn { font-size: 0.85rem; height: 40px; padding: 0 1rem; border-radius: 8px; width: 110px; }
+                .btn-activate { background: #f0fdf4; color: #16a34a; }
+                .btn-activate:hover { background: #dcfce7; }
+                .btn-deactivate { background: #fee2e2; color: #dc2626; }
+                .btn-deactivate:hover { background: #fecaca; }
+
+                .action-icons { display: flex; gap: 0.5rem; }
+                .icon-btn-dash { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; border: 1px solid var(--border); color: var(--text-secondary); }
+                .icon-btn-dash.info:hover { color: var(--accent); border-color: var(--accent); background: #f0f7ff; }
+                .icon-btn-dash.danger:hover { color: #dc2626; border-color: #dc2626; background: #fef2f2; }
+
+                /* Generic */
+                .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 90; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); }
+                .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+                .mobile-header-bar { display: none; padding: 1rem 1.5rem; background: #ffffff; border-bottom: 1px solid var(--border); align-items: center; gap: 1rem; position: sticky; top: 0; z-index: 80; }
+                
+                .empty-state-v3 {
+                    text-align: center;
+                    padding: 4rem 2rem;
+                    border: 2px dashed var(--border);
+                    border-radius: 12px;
+                    background: #ffffff;
+                }
+                .empty-v3-icon { margin-bottom: 1.5rem; color: var(--text-muted); }
+
                 @media (max-width: 1024px) {
-                    .dashboard-sidebar { 
-                        position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-100%); 
-                        box-shadow: 20px 0 50px rgba(0,0,0,0.1); 
+                    .dashboard-sidebar {
+                        position: fixed;
+                        transform: translateX(-100%);
                     }
                     .dashboard-sidebar.open { transform: translateX(0); }
-                    .mobile-close { display: block; }
-                    .mobile-header { display: flex; }
-                    .dashboard-content { padding: 1.5rem; }
-                    /* Tablet: 2 columns for stats */
-                    .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+                    .mobile-header-bar { display: flex; }
+                    .dashboard-content { padding: 2rem 1.5rem; }
+                    .content-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+                    .dash-cta-btn { width: 100%; }
                 }
 
                 @media (max-width: 768px) {
-                    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-                    .stat-card { padding: 1rem; }
-                    .stat-icon { width: 2.5rem; height: 2.5rem; }
-                    
-                    .vehicle-item { flex-direction: column; align-items: stretch; gap: 1rem; }
-                    .vehicle-image { width: 100%; height: 180px; }
-                    
-                    /* Actions row on mobile */
-                    .vehicle-actions { 
-                        justify-content: space-between; 
-                        border-top: 1px solid #f1f5f9; 
-                        padding-top: 1rem; 
-                    }
-                    .action-btn.view { width: auto; padding: 0.5rem 1rem; height: auto; border-radius: 0.5rem; flex: 1; }
-                    .action-btn.delete { width: auto; padding: 0.5rem 1rem; border: 1px solid #e2e8f0; }
-                }
-
-                @media (max-width: 480px) {
-                    .page-title { font-size: 1.5rem; }
-                    .stats-grid { grid-template-columns: 1fr; }
-                    .vehicle-details h3 { font-size: 1rem; }
+                    .stats-row { grid-template-columns: 1fr; }
+                    .listing-card { flex-direction: column; align-items: stretch; }
+                    .listing-thumb { width: 100%; height: 200px; }
+                    .listing-actions { border-top: 1px solid var(--border); padding-top: 1rem; justify-content: space-between; }
                 }
             `}</style>
         </div>

@@ -4,7 +4,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import VehicleCard from '../components/VehicleCard';
 import {
     Search, ShieldCheck, Handshake, ChevronRight,
-    Car, Bike, Truck, ArrowRight, MapPin, SlidersHorizontal
+    Car, Bike, Truck, ArrowRight, MapPin,
+    LayoutGrid, Timer, BadgeCheck, Zap,
+    ArrowUpRight, CircleDot, Bike as BikeIcon,
+    Truck as TruckIcon, Tractor, Rocket, UserPlus, FileEdit, CheckCircle2
 } from 'lucide-react';
 
 export default function Home() {
@@ -13,8 +16,9 @@ export default function Home() {
     const navigate = useNavigate();
 
     // Search State
-    const [vehicleType, setVehicleType] = useState('all');
     const [city, setCity] = useState('');
+    const [category, setCategory] = useState('all');
+    const [maxPrice, setMaxPrice] = useState('');
 
     useEffect(() => {
         async function fetchVehicles() {
@@ -23,7 +27,7 @@ export default function Home() {
                 .select(`*, vehicle_images(image_url)`)
                 .eq('is_live', true)
                 .order('created_at', { ascending: false })
-                .limit(3);
+                .limit(4);
 
             if (error) console.error('Error fetching vehicles:', error);
             else setVehicles(data || []);
@@ -34,459 +38,817 @@ export default function Home() {
 
     const handleSearch = (e) => {
         e.preventDefault();
-        navigate(`/browse?type=${vehicleType}&city=${city}`);
+        let query = `/browse?type=${category}`;
+        if (city) query += `&city=${city}`;
+        if (maxPrice) query += `&maxPrice=${maxPrice}`;
+        navigate(query);
     };
 
     const categories = [
-        { id: 'car', label: 'Cars', icon: Car },
-        { id: 'bike', label: 'Bikes', icon: Bike },
-        { id: 'truck', label: 'Trucks', icon: Truck },
-        { id: 'tractor', label: 'Tractors', icon: Truck }, // Using generic icon if needed
+        { id: 'car', label: 'Car', icon: Car, color: '#2563EB' },
+        { id: 'bike', label: 'Bike', icon: BikeIcon, color: '#16A34A' },
+        { id: 'cycle', label: 'Cycle', icon: Bike, color: '#7C3AED' },
+        { id: 'truck', label: 'Truck', icon: TruckIcon, color: '#EA580C' },
+        { id: 'tractor', label: 'Tractor', icon: Tractor, color: '#DC2626' },
+        { id: 'other', label: 'Other', icon: CircleDot, color: '#64748B' },
+    ];
+
+    const features = [
+        { title: 'Direct Owner Deals', desc: 'No middleman interference. Talk directly to the owners.', icon: Handshake },
+        { title: 'No Commission', desc: 'Pay 0% commission on every single transaction.', icon: Zap },
+        { title: 'Trusted Listings', desc: 'Every listing is verified for quality and authenticity.', icon: BadgeCheck },
+        { title: 'Easy & Fast Search', desc: 'Find your dream vehicle in seconds with smart filters.', icon: Timer },
+    ];
+
+    const steps = [
+        { title: 'List Your Vehicle', desc: 'Add detailed information and high-quality photos.', icon: FileEdit },
+        { title: 'Connect with Buyers', desc: 'Receive inquiries directly via chat or phone.', icon: UserPlus },
+        { title: 'Close the Deal', desc: 'Finalize the price and hand over the keys safely.', icon: CheckCircle2 },
     ];
 
     return (
-        <div className="home-page">
+        <div className="home-wrapper">
 
-            {/* 1. HERO SECTION - Premium Split Layout */}
-            <section className="hero-section">
-                <div className="container hero-container">
-
-                    {/* Left Content */}
-                    <div className="hero-content animate-fade-in">
-                        <div className="trust-pill">
-                            <ShieldCheck size={14} className="icon" />
-                            <span>No Commission. Direct Selling.</span>
+            {/* 1. HERO SECTION V3 (IMAGELESS PREMIUM) */}
+            <section className="hero-v3-abstract">
+                <div className="mesh-bg"></div>
+                <div className="container">
+                    <div className="hero-content-center animate-fade-in">
+                        <div className="premium-badge-v3">
+                            <Rocket size={14} />
+                            <span>Revolutionizing Direct Trading</span>
                         </div>
 
-                        <h1 className="hero-title">
-                            Buying a Car? <br />
-                            <span className="text-gradient">Deal Directly.</span>
+                        <h1 className="hero-heading-v3">
+                            The Smartest Way to <br />
+                            <span className="text-glow-v3">Buy & Sell Directly</span>
                         </h1>
 
-                        <p className="hero-subtitle">
-                            Skip the dealers and hidden margins. Connect directly with verified sellers for the best price on your next vehicle.
+                        <p className="hero-lead-v3">
+                            Experience India's first agent-free vehicle marketplace.
+                            <strong> Zero Commission. Zero Middlemen. 100% Transparency.</strong>
                         </p>
 
-                        {/* Luxury Search Bar */}
-                        <div className="search-bar-luxury">
-                            <div className="search-group border-r">
-                                <Car className="search-icon" size={18} />
-                                <select
-                                    value={vehicleType}
-                                    onChange={(e) => setVehicleType(e.target.value)}
-                                    className="search-select"
-                                >
-                                    <option value="all">Any Vehicle</option>
-                                    <option value="car">Car</option>
-                                    <option value="bike">Bike</option>
-                                    <option value="truck">Truck</option>
-                                </select>
-                            </div>
-                            <div className="search-group">
-                                <MapPin className="search-icon" size={18} />
-                                <input
-                                    type="text"
-                                    placeholder="City (e.g. Delhi)"
-                                    value={city}
-                                    onChange={(e) => setCity(e.target.value)}
-                                    className="search-input"
-                                />
-                            </div>
-                            <button onClick={handleSearch} className="search-btn-primary">
-                                <Search size={18} />
-                            </button>
-                        </div>
-
-                        <div className="hero-stats">
-                            <div className="stat-item">
-                                <strong>10k+</strong> <span>Active Listings</span>
-                            </div>
-                            <div className="stat-separator"></div>
-                            <div className="stat-item">
-                                <strong>0%</strong> <span>Commission</span>
-                            </div>
-                            <div className="stat-separator"></div>
-                            <div className="stat-item">
-                                <strong>100%</strong> <span>Direct Chat</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right Image/Graphic */}
-                    <div className="hero-image-wrapper animate-fade-in-delay">
-                        <div className="image-card glow-effect">
-                            <img
-                                src="https://images.unsplash.com/photo-1617788138017-80ad40651399?q=80&w=1000&auto=format&fit=crop"
-                                alt="Luxury Car"
-                                className="hero-img"
-                            />
-                            <div className="floating-card glass">
-                                <ShieldCheck size={20} color="#2563eb" />
-                                <div>
-                                    <p className="fc-title">Verified Seller</p>
-                                    <p className="fc-sub">Instant Connection</p>
+                        <div className="search-glass-container">
+                            <form onSubmit={handleSearch} className="search-glass-inner">
+                                <div className="glass-field">
+                                    <MapPin size={20} className="field-icon" />
+                                    <input
+                                        type="text"
+                                        placeholder="Location (e.g. Delhi)"
+                                        value={city}
+                                        onChange={(e) => setCity(e.target.value)}
+                                    />
                                 </div>
+                                <div className="glass-divider"></div>
+                                <div className="glass-field">
+                                    <Car size={20} className="field-icon" />
+                                    <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                                        <option value="all">Every Category</option>
+                                        <option value="car">Luxury Cars</option>
+                                        <option value="bike">Premium Bikes</option>
+                                        <option value="truck">Payload Trucks</option>
+                                        <option value="tractor">Agri Tractors</option>
+                                    </select>
+                                </div>
+                                <button type="submit" className="glass-submit-btn">
+                                    <Search size={20} />
+                                    <span>Discover Deals</span>
+                                </button>
+                            </form>
+                        </div>
+
+                        <div className="trust-row-v3">
+                            <div className="trust-item">
+                                <BadgeCheck size={18} className="text-accent" />
+                                <span>Verified Listings</span>
+                            </div>
+                            <div className="trust-item">
+                                <ShieldCheck size={18} className="text-accent" />
+                                <span>Direct Owner Contact</span>
+                            </div>
+                            <div className="trust-item">
+                                <Zap size={18} className="text-accent" />
+                                <span>No Hidden Fees</span>
                             </div>
                         </div>
-                        <div className="decorative-circle blur-blue"></div>
-                        <div className="decorative-circle blur-indigo"></div>
-                    </div>
 
+                        <div className="hero-stats-centered">
+                            <div className="h-stat">
+                                <strong>12,400+</strong>
+                                <small>Vehicles Listed</small>
+                            </div>
+                            <div className="h-stat">
+                                <strong>850+</strong>
+                                <small>Cities Covered</small>
+                            </div>
+                            <div className="h-stat">
+                                <strong>24/7</strong>
+                                <small>Buyer Support</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            {/* 2. CURATED LISTINGS */}
-            <section className="section bg-subtle">
+            {/* 2. POPULAR CATEGORIES */}
+            <section className="section">
                 <div className="container">
-                    <div className="section-header">
-                        <div>
-                            <h2 className="section-title">Fresh Arrivals</h2>
-                            <p className="section-desc">Handpicked vehicles for the discerning buyer.</p>
+                    <h2 className="section-title-centered">Browse by Category</h2>
+                    <p className="section-subtitle-centered">Explore diverse range of vehicles tailored to your needs</p>
+
+                    <div className="category-grid-v2">
+                        {categories.map(cat => (
+                            <Link to={`/browse?type=${cat.id}`} key={cat.id} className="category-card-v2">
+                                <div className="cat-icon-box-v2" style={{ backgroundColor: `${cat.color}15`, border: `1px solid ${cat.color}30` }}>
+                                    <cat.icon size={28} style={{ color: cat.color }} />
+                                </div>
+                                <div style={{ textAlign: 'center' }}>
+                                    <span className="cat-label-v2">{cat.label}</span>
+                                    <div className="cat-count-v2">Top Deals</div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* 3. FEATURED VEHICLES */}
+            <section className="section section-bg">
+                <div className="container">
+                    <div className="flex-header">
+                        <div className="flex-title-block">
+                            <h2 className="section-title-left">Fresh Arrivals</h2>
+                            <p className="text-muted">Hand-picked premium listings in your area</p>
                         </div>
-                        <Link to="/browse" className="link-arrow">
-                            View All Inventory <ArrowRight size={18} />
+                        <Link to="/browse" className="view-all-link">
+                            <span>Explore Marketplace</span>
+                            <ArrowRight size={18} />
                         </Link>
                     </div>
 
-                    {!loading && vehicles.length > 0 ? (
-                        <div className="listings-grid">
-                            {vehicles.map(v => (
-                                <VehicleCard key={v.id} vehicle={v} />
+                    {loading ? (
+                        <div className="grid-4-2-1">
+                            {[1, 2, 3, 4].map(n => (
+                                <div key={n} className="card" style={{ height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <div className="text-center">
+                                        <Timer className="animate-spin text-accent" size={32} />
+                                        <p style={{ marginTop: '1rem', fontWeight: 600 }}>Loading listings...</p>
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     ) : (
-                        <div className="empty-state">
-                            <p>Loading curated inventory...</p>
+                        <div className="grid-4-2-1">
+                            {vehicles.map(v => (
+                                <VehicleCard key={v.id} vehicle={v} />
+                            ))}
                         </div>
                     )}
                 </div>
             </section>
 
-            {/* 3. SIMPLIFIED PROCESS */}
-            <section className="section">
+            {/* 4. WHY APNICAR */}
+            <section className="section section-bg">
                 <div className="container">
-                    <div className="process-grid">
-                        <div className="process-content">
-                            <h2 className="section-title">Selling Made Simple.</h2>
-                            <p className="section-desc">
-                                We've removed the chaos from selling used vehicles.
-                                List in minutes, chat directly with buyers, and close the deal on your terms.
-                            </p>
-                            <Link to="/seller-signup" className="btn btn-primary mt-4">
-                                List Your Vehicle
-                            </Link>
-                        </div>
-                        <div className="process-steps">
-                            <div className="step-item">
-                                <div className="step-number">01</div>
-                                <div>
-                                    <h4>Create Account</h4>
-                                    <p>Sign up as a verified seller in seconds.</p>
+                    <h2 className="section-title-centered">Direct. Simple. Transparent.</h2>
+                    <p className="section-subtitle-centered">Building India's most trusted direct-to-owner vehicle marketplace</p>
+
+                    <div className="feature-grid-v2">
+                        {features.map((f, i) => (
+                            <div key={i} className="feature-card-v2">
+                                <div className="feature-icon-v2">
+                                    <f.icon size={26} strokeWidth={1.5} />
                                 </div>
+                                <h4 className="feature-title-v2">{f.title}</h4>
+                                <p className="feature-desc-v2">{f.desc}</p>
                             </div>
-                            <div className="step-item">
-                                <div className="step-number">02</div>
-                                <div>
-                                    <h4>Post Ad</h4>
-                                    <p>Upload photos and details. Go live instantly.</p>
-                                </div>
-                            </div>
-                            <div className="step-item">
-                                <div className="step-number">03</div>
-                                <div>
-                                    <h4>Close Deal</h4>
-                                    <p>Connect with buyers directly. No commissions.</p>
-                                </div>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </section>
 
-            {/* 4. PREMIUM CTA */}
-            <section className="cta-minimal">
-                <div className="container text-center">
-                    <h2 className="cta-headline">Ready to upgrade your journey?</h2>
-                    <p className="cta-subhead">Join the most trusted vehicle community in India today.</p>
-                    <div className="cta-actions">
-                        <Link to="/browse" className="btn btn-secondary">Browse Inventory</Link>
-                        <Link to="/seller-signup" className="btn btn-primary">Start Selling</Link>
+            {/* 5. HOW IT WORKS */}
+            <section className="section">
+                <div className="container">
+                    <h2 className="section-title-centered">How It Works</h2>
+                    <p className="section-subtitle-centered">Experience a seamless journey from listing to ownership</p>
+
+                    <div className="how-grid-v3">
+                        {steps.map((s, i) => (
+                            <div key={i} className="how-step-v3">
+                                <div className="step-num-v3">0{i + 1}</div>
+                                <div className="step-icon-v3">
+                                    <s.icon size={36} strokeWidth={1.5} />
+                                </div>
+                                <h4 className="step-title-v3">{s.title}</h4>
+                                <p className="step-desc-v3">{s.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* TRUST BANNER */}
+            <section className="section-bg" style={{ padding: '4rem 0' }}>
+                <div className="container">
+                    <div className="trust-banner-v2">
+                        <div className="trust-icon-box-v2">
+                            <ShieldCheck size={32} />
+                        </div>
+                        <div className="trust-text-v2">
+                            <h3 style={{ margin: 0, fontSize: '1.25rem' }}>Your Safety is Our Priority</h3>
+                            <p style={{ margin: '0.25rem 0 0', opacity: 0.7 }}>We verify all listings and ensure direct owner connections to prevent fraud.</p>
+                        </div>
+                        <Link to="/about" className="btn btn-outline" style={{ marginLeft: 'auto', background: 'white' }}>Learn More</Link>
+                    </div>
+                </div>
+            </section>
+
+            {/* 6. CTA SECTION */}
+            <section className="section">
+                <div className="container">
+                    <div className="premium-cta-v2">
+                        <div className="cta-content-v2 animate-fade-in">
+                            <h2 className="cta-title-v2">Ready to Sell Your <br />Vehicle Today?</h2>
+                            <p className="cta-desc-v2">Post your first listing in under 2 minutes. Tap into India's largest direct buyer network.</p>
+
+                            <div className="cta-actions-v2">
+                                <Link to="/seller-signup" className="btn btn-accent cta-btn-v2" style={{ background: '#2563EB' }}>
+                                    <span>Post Free Listing</span>
+                                    <ArrowRight size={20} />
+                                </Link>
+                                <Link to="/contact" className="btn btn-outline cta-btn-v2" style={{ color: 'white', borderColor: 'rgba(255,255,255,0.2)' }}>
+                                    <span>Contact Support</span>
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className="cta-visual-v2">
+                            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                                <div className="cta-rocket-box">
+                                    <Rocket size={64} color="#2563EB" fill="#2563EB" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
             <style>{`
-                /* HERO SECTION */
-                .hero-section {
-                    padding: 4rem 0 6rem;
-                    background: #ffffff;
+                .home-wrapper {
+                    background: var(--bg-page);
+                }
+
+                /* HERO V3 - ABSTRACT & IMAGELESS */
+                .hero-v3-abstract {
                     position: relative;
+                    padding: 8rem 0 10rem;
+                    background: #ffffff;
                     overflow: hidden;
+                    text-align: center;
                 }
-                
-                .hero-container {
-                    display: grid;
-                    grid-template-columns: 1.1fr 0.9fr;
+
+                .mesh-bg {
+                    position: absolute;
+                    top: 0; left: 0; right: 0; bottom: 0;
+                    background-image: 
+                        radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.05) 0px, transparent 50%),
+                        radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+                        radial-gradient(at 100% 100%, rgba(37, 99, 235, 0.05) 0px, transparent 50%),
+                        radial-gradient(at 0% 100%, rgba(20, 184, 166, 0.05) 0px, transparent 50%);
+                    z-index: 1;
+                }
+
+                .hero-content-center {
+                    position: relative;
+                    z-index: 2;
+                    display: flex;
+                    flex-direction: column;
                     align-items: center;
-                    gap: 4rem;
                 }
 
-                /* Left Content */
-                .hero-content {
-                    max-width: 600px;
+                .premium-badge-v3 {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    background: rgba(37, 99, 235, 0.08);
+                    color: var(--accent);
+                    padding: 0.6rem 1.25rem;
+                    border-radius: 100px;
+                    font-size: 0.75rem;
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    margin-bottom: 2.5rem;
+                    border: 1px solid rgba(37, 99, 235, 0.1);
                 }
 
-                .trust-pill {
-                    display: inline-flex; align-items: center; gap: 0.5rem;
-                    background: #eff6ff; color: #2563eb;
-                    padding: 0.5rem 1rem; border-radius: 2rem;
-                    font-size: 0.85rem; font-weight: 700;
-                    margin-bottom: 1.5rem;
+                .hero-heading-v3 {
+                    font-size: 5.5rem;
+                    font-weight: 800;
+                    line-height: 1;
+                    letter-spacing: -0.05em;
+                    color: var(--primary);
+                    margin-bottom: 2rem;
+                    font-family: 'Outfit', sans-serif;
                 }
 
-                .hero-title {
-                    font-size: 3.75rem;
-                    margin-bottom: 1.25rem;
-                    color: var(--text-main);
-                    letter-spacing: -0.03em;
-                    line-height: 1.1;
-                }
-                
-                .text-gradient {
-                    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+                .text-glow-v3 {
+                    background: linear-gradient(135deg, var(--primary) 30%, var(--accent) 100%);
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
                 }
 
-                .hero-subtitle {
-                    font-size: 1.125rem;
+                .hero-lead-v3 {
+                    font-size: 1.4rem;
                     color: var(--text-secondary);
-                    margin-bottom: 2.5rem;
-                    line-height: 1.7;
-                    max-width: 90%;
+                    max-width: 700px;
+                    line-height: 1.6;
+                    margin-bottom: 4rem;
                 }
 
-                /* Search Bar */
-                .search-bar-luxury {
-                    background: white;
-                    padding: 0.4rem;
-                    border-radius: 1rem; /* Less rounded than a full pill, more modern UI */
-                    box-shadow: 0 10px 30px -5px rgba(0,0,0,0.08);
-                    display: flex; alignItems: center;
-                    border: 1px solid var(--border);
-                    margin-bottom: 3rem;
-                    position: relative;
-                    z-index: 10;
-                }
-                
-                .search-group {
-                    flex: 1; position: relative;
-                }
-                .search-group.border-r {
-                    border-right: 1px solid #f1f5f9;
-                }
-                
-                .search-select, .search-input {
-                    width: 100%; border: none; outline: none; background: transparent;
-                    padding: 0 1rem 0 3rem; /* Adjusted padding */
-                    height: 3.5rem; /* Explicit height */
-                    line-height: normal;
-                    font-size: 1rem; color: var(--text-main); font-weight: 500;
-                    appearance: none;
-                    -webkit-appearance: none;
-                    -moz-appearance: none;
-                    position: relative;
-                    z-index: 5; /* Input below icon but clickable */
-                }
-                .search-icon {
-                    position: absolute; left: 1.25rem; top: 0; bottom: 0; margin: auto;
-                    height: 1.25rem; /* 20px */
-                    color: #94a3b8; pointer-events: none;
-                    z-index: 10;
-                }
-                .search-input::placeholder { color: #94a3b8; opacity: 1; }
-
-                .search-btn-primary {
-                    width: 3.5rem; 
-                    height: 3.5rem;
-                    flex-shrink: 0;
-                    border-radius: 0.75rem; /* 12px */
-                    background-color: #0F172A; /* Deep Navy - Explicit */
-                    color: #FFFFFF;
-                    border: none;
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: center;
-                    cursor: pointer; 
-                    transition: all 0.2s ease;
-                    margin-left: 0.5rem;
-                    box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.1);
-                }
-
-                .search-btn-primary:hover {
-                    background-color: #1E293B; /* Lighter Navy */
-                    transform: translateY(-1px);
-                    box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.2);
-                }
-
-                .search-btn-primary svg {
-                    color: #FFFFFF;
-                    width: 20px;
-                    height: 20px;
-                    stroke-width: 2.5px; /* Bolder icon */
-                }
-
-                /* Stats */
-                .hero-stats {
-                    display: flex; align-items: center; gap: 2rem;
-                }
-                .stat-item {
-                    display: flex; flex-direction: column;
-                }
-                .stat-item strong {
-                    font-size: 1.5rem; font-weight: 800; color: var(--text-main);
-                    line-height: 1; margin-bottom: 0.25rem;
-                }
-                .stat-item span {
-                    font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;
-                }
-                .stat-separator {
-                    width: 1px; height: 2.5rem; background: #e2e8f0;
-                }
-
-                /* Right Image Section */
-                .hero-image-wrapper {
-                    position: relative;
-                    display: flex;
-                    justify-content: center;
-                }
-
-                .image-card {
-                    position: relative;
-                    border-radius: 2rem;
-                    overflow: hidden;
+                /* Search Glass - Center */
+                .search-glass-container {
                     width: 100%;
-                    max-width: 500px;
-                    aspect-ratio: 4/5;
-                    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-                    transform: rotate(2deg);
+                    max-width: 800px;
+                    background: rgba(255, 255, 255, 0.7);
+                    backdrop-filter: blur(20px);
+                    padding: 0.75rem;
+                    border-radius: 20px;
+                    border: 1px solid rgba(255, 255, 255, 0.9);
+                    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+                    margin-bottom: 4rem;
+                }
+
+                .search-glass-inner {
+                    display: flex;
+                    align-items: center;
+                    background: white;
+                    border-radius: 16px;
+                    padding: 0.25rem;
+                }
+
+                .glass-field {
+                    flex: 1;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    padding: 0 1.5rem;
+                }
+
+                .glass-field .field-icon {
+                    color: var(--accent);
+                    opacity: 0.7;
+                }
+
+                .glass-field input, .glass-field select {
+                    width: 100%;
+                    height: 3.5rem;
+                    border: none;
+                    background: transparent;
+                    font-size: 1.05rem;
+                    font-weight: 700;
+                    color: var(--primary);
+                    outline: none;
+                    font-family: inherit;
+                }
+
+                .glass-divider {
+                    width: 1px;
+                    height: 2.5rem;
+                    background: var(--border);
+                }
+
+                .glass-submit-btn {
+                    height: 4rem;
+                    padding: 0 2.5rem;
+                    background: var(--primary);
+                    color: white;
+                    border-radius: 14px;
+                    font-weight: 800;
+                    font-size: 1rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+
+                .glass-submit-btn:hover {
+                    background: var(--accent);
+                    transform: scale(1.02);
+                    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+                }
+
+                /* Trust Row */
+                .trust-row-v3 {
+                    display: flex;
+                    gap: 3rem;
+                    margin-bottom: 5rem;
+                }
+
+                .trust-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    font-size: 0.95rem;
+                    font-weight: 700;
+                    color: var(--text-secondary);
+                }
+
+                /* CATEGORIES SECTION */
+                .category-grid-v2 {
+                    display: grid;
+                    grid-template-columns: repeat(6, 1fr);
+                    gap: 1.5rem;
+                    margin-top: 1rem;
+                }
+
+                .category-card-v2 {
+                    background: white;
+                    border: 1px solid var(--border);
+                    border-radius: 20px;
+                    padding: 2rem 1rem;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1.25rem;
+                    text-decoration: none;
+                    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .category-card-v2::before {
+                    content: '';
+                    position: absolute;
+                    top: 0; left: 0; right: 0; height: 4px;
+                    background: var(--accent);
+                    opacity: 0;
+                    transition: opacity 0.3s;
+                }
+
+                .category-card-v2:hover {
+                    transform: translateY(-8px);
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+                    border-color: var(--accent);
+                }
+
+                .category-card-v2:hover::before {
+                    opacity: 1;
+                }
+
+                .cat-icon-box-v2 {
+                    width: 64px;
+                    height: 64px;
+                    border-radius: 16px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: transform 0.3s;
+                }
+
+                .category-card-v2:hover .cat-icon-box-v2 {
+                    transform: scale(1.1) rotate(5deg);
+                }
+
+                .cat-label-v2 {
+                    font-size: 0.9rem;
+                    font-weight: 800;
+                    color: var(--primary);
+                    text-transform: uppercase;
+                    letter-spacing: 0.02em;
+                }
+
+                .cat-count-v2 {
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    color: var(--text-muted);
+                }
+
+                @media (max-width: 1200px) {
+                    .category-grid-v2 { grid-template-columns: repeat(3, 1fr); }
+                }
+
+                @media (max-width: 640px) {
+                    .category-grid-v2 { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+                    .category-card-v2 { padding: 1.5rem 1rem; }
+                }
+
+                /* SECTION UTILS */
+                .hero-stats-centered {
+                    display: flex;
+                    gap: 6rem;
+                    padding-top: 4rem;
+                    border-top: 1px solid var(--border);
+                    width: 100%;
+                    max-width: 900px;
+                    justify-content: center;
+                }
+
+                .h-stat {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.25rem;
+                }
+
+                .h-stat strong {
+                    font-size: 2.5rem;
+                    font-weight: 800;
+                    color: var(--primary);
+                    letter-spacing: -0.02em;
+                    line-height: 1;
+                }
+
+                .h-stat small {
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    color: var(--text-muted);
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                }
+
+                /* WHY CHOOSE SECTION */
+                .feature-grid-v2 {
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 2.5rem;
+                }
+
+                .feature-card-v2 {
+                    padding: 2.5rem;
+                    background: white;
+                    border-radius: 20px;
+                    border: 1px solid var(--border);
+                    transition: all 0.3s;
+                }
+
+                .feature-card-v2:hover {
+                    box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+                    border-color: var(--accent);
+                }
+
+                .feature-icon-v2 {
+                    width: 56px;
+                    height: 56px;
+                    background: var(--bg-subtle);
+                    border-radius: 14px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--accent);
+                    margin-bottom: 2rem;
+                    transition: transform 0.3s;
+                }
+
+                /* FRESH ARRIVALS HEADER */
+                .flex-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-end;
+                    margin-bottom: 3.5rem;
+                }
+
+                .flex-title-block {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5rem;
+                }
+
+                .section-title-left {
+                    font-size: 2.25rem;
+                    font-weight: 800;
+                    color: var(--primary);
+                    letter-spacing: -0.03em;
+                    margin: 0;
+                }
+
+                .view-all-link {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    padding: 0.75rem 1.25rem;
+                    background: white;
+                    border: 1px solid var(--border);
+                    border-radius: 12px;
+                    color: var(--primary);
+                    font-weight: 700;
+                    font-size: 0.95rem;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+
+                .view-all-link:hover {
+                    border-color: var(--accent);
+                    color: var(--accent);
+                    transform: translateX(5px);
+                    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+                }
+
+                @media (max-width: 768px) {
+                    .flex-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+                    .view-all-link { width: 100%; justify-content: center; }
+                }
+
+                .feature-card-v2:hover .feature-icon-v2 {
+                    transform: scale(1.1) rotate(-5deg);
+                    background: var(--accent);
+                    color: white;
+                }
+
+                .feature-title-v2 {
+                    font-size: 1.25rem;
+                    font-weight: 800;
+                    color: var(--primary);
+                    margin-bottom: 1rem;
+                    letter-spacing: -0.01em;
+                }
+
+                .feature-desc-v2 {
+                    font-size: 0.95rem;
+                    color: var(--text-secondary);
+                    line-height: 1.6;
+                }
+
+                /* HOW IT WORKS SECTION */
+                .how-grid-v3 {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 3rem;
+                    position: relative;
+                }
+
+                .how-step-v3 {
+                    background: white;
+                    padding: 3rem 2rem;
+                    border-radius: 24px;
+                    text-align: center;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    border: 1px solid var(--border);
+                    z-index: 2;
+                    transition: transform 0.3s;
+                }
+
+                .how-step-v3:hover {
+                    transform: translateY(-5px);
+                }
+
+                .step-num-v3 {
+                    width: 32px;
+                    height: 32px;
+                    background: var(--primary);
+                    color: white;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 0.8rem;
+                    font-weight: 800;
+                    margin-bottom: 2rem;
+                }
+
+                .step-icon-v3 {
+                    width: 80px;
+                    height: 80px;
+                    background: #f8fafc;
+                    border-radius: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--primary);
+                    margin-bottom: 2rem;
+                }
+
+                .step-title-v3 {
+                    font-size: 1.5rem;
+                    font-weight: 800;
+                    color: var(--primary);
+                    margin-bottom: 1rem;
+                }
+
+                .step-desc-v3 {
+                    color: var(--text-secondary);
+                    font-size: 1rem;
+                    line-height: 1.6;
+                }
+
+                /* CTA SECTION */
+                .premium-cta-v2 {
+                    background: var(--primary);
+                    background-image: radial-gradient(circle at top right, #1e293b 0%, #0f172a 100%);
+                    border-radius: 32px;
+                    padding: 6rem 4rem;
+                    display: grid;
+                    grid-template-columns: 1fr 0.8fr;
+                    gap: 4rem;
+                    align-items: center;
+                    overflow: hidden;
+                    position: relative;
+                }
+
+                .cta-content-v2 {
+                    position: relative;
                     z-index: 2;
                 }
-                
-                .hero-img {
-                    width: 100%; height: 100%; object-fit: cover;
+
+                .cta-title-v2 {
+                    font-size: 3.5rem;
+                    line-height: 1.1;
+                    color: white;
+                    font-weight: 800;
+                    margin-bottom: 1.5rem;
+                    font-family: 'Outfit', sans-serif;
                 }
 
-                /* Gimmicks */
-                .floating-card {
-                    position: absolute; bottom: 2rem; left: -2rem;
-                    background: rgba(255, 255, 255, 0.9);
-                    backdrop-filter: blur(12px);
-                    padding: 1rem 1.5rem;
-                    border-radius: 1rem;
-                    display: flex; alignItems: center; gap: 1rem;
-                    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-                    animation: float 6s ease-in-out infinite;
-                    z-index: 3;
-                    border: 1px solid rgba(255,255,255,0.5);
-                }
-                .fc-title { font-weight: 700; color: var(--text-main); font-size: 0.9rem; margin: 0; }
-                .fc-sub { font-size: 0.75rem; color: var(--text-secondary); margin: 0; }
-
-                .decorative-circle {
-                    position: absolute; border-radius: 50%; z-index: 0;
-                    filter: blur(80px); opacity: 0.6;
-                }
-                .blur-blue {
-                    width: 300px; height: 300px; background: #bfdbfe;
-                    top: -20px; right: -50px;
-                }
-                .blur-indigo {
-                    width: 250px; height: 250px; background: #e0e7ff;
-                    bottom: -20px; left: 0;
-                }
-
-                @keyframes float {
-                    0% { transform: translateY(0px); }
-                    50% { transform: translateY(-10px); }
-                    100% { transform: translateY(0px); }
-                }
-
-                /* COMMON SECTIONS */
-                /* SECTION HEADERS */
-                .section-header {
-                    display: flex; justify-content: space-between; align-items: flex-end;
+                .cta-desc-v2 {
+                    font-size: 1.25rem;
+                    color: #94A3B8;
                     margin-bottom: 3rem;
+                    line-height: 1.6;
                 }
-                .section-title {
-                    font-size: 2.25rem; letter-spacing: -0.03em; color: var(--text-main);
-                    margin-bottom: 0.5rem;
-                }
-                .section-desc {
-                    font-size: 1.1rem; color: var(--text-secondary); max-width: 500px;
-                }
-                .link-arrow {
-                    display: flex; alignItems: center; gap: 0.5rem;
-                    font-weight: 600; color: var(--accent); transition: gap 0.2s;
-                }
-                .link-arrow:hover { gap: 0.75rem; color: var(--accent-hover); }
 
-                /* LISTINGS GRID */
-                .listings-grid {
-                    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
+                .cta-actions-v2 {
+                    display: flex;
+                    gap: 1.5rem;
                 }
-                .bg-subtle { background-color: var(--bg-subtle); }
 
-                /* PROCESS SECTION */
-                .process-grid {
-                    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; alignItems: center;
+                .cta-btn-v2 {
+                    height: 60px;
+                    padding: 0 2.5rem;
+                    border-radius: 16px;
+                    font-weight: 700;
+                    font-size: 1.05rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
                 }
-                .step-item {
-                    display: flex; gap: 1.5rem; margin-bottom: 2rem;
-                }
-                .step-number {
-                    font-size: 1.5rem; font-weight: 800; color: var(--border);
-                    line-height: 1; flex-shrink: 0;
-                }
-                .step-item h4 { font-size: 1.1rem; margin-bottom: 0.25rem; font-weight: 700; }
-                .step-item p { color: var(--text-secondary); font-size: 0.95rem; }
-                .mt-4 { margin-top: 1.5rem; }
 
-                /* CTA MINIMAL */
-                .cta-minimal {
-                    padding: 8rem 0; background: var(--bg-page);
-                    border-top: 1px solid var(--border);
+                .cta-visual-v2 {
+                    position: relative;
+                    height: 100%;
                 }
-                .cta-headline { font-size: 2.5rem; margin-bottom: 1rem; letter-spacing: -0.03em; }
-                .cta-subhead { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2.5rem; }
-                .cta-actions { display: flex; gap: 1rem; justify-content: center; }
+
+                .cta-rocket-box {
+                    width: 120px;
+                    height: 120px;
+                    background: rgba(37, 99, 235, 0.1);
+                    border-radius: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transform: rotate(-15deg);
+                    box-shadow: 0 0 50px rgba(37, 99, 235, 0.2);
+                }
+
+
+
+                /* TRUST BANNER */
+                .trust-banner-v2 {
+                    background: white;
+                    border: 1px solid var(--border);
+                    border-radius: 20px;
+                    padding: 2.5rem 3rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 2.5rem;
+                    box-shadow: var(--shadow-sm);
+                }
+
+                .trust-icon-box-v2 {
+                    width: 64px;
+                    height: 64px;
+                    background: #F0FDF4;
+                    color: #16A34A;
+                    border-radius: 16px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                @media (max-width: 768px) {
+                    .trust-banner-v2 { flex-direction: column; text-align: center; padding: 2rem; }
+                    .trust-banner-v2 .btn { width: 100%; margin: 0 !important; }
+                }
 
                 /* RESPONSIVE */
-                @media (max-width: 1024px) {
-                    .hero-container { grid-template-columns: 1fr; gap: 3rem; text-align: center; }
-                    .hero-content { margin: 0 auto; }
-                    .hero-image-wrapper { display: none; } /* Hide complicated image on tablet for simpler view or adjust */
-                    
-                    /* If you want to keep image on tablet, adjust grid or stack */
-                    .search-bar-luxury { max-width: 600px; margin-left: auto; margin-right: auto; }
-                    .hero-stats { justify-content: center; }
-
-                    .listings-grid { grid-template-columns: repeat(2, 1fr); }
-                    .process-grid { grid-template-columns: 1fr; gap: 3rem; }
+                @media (max-width: 1200px) {
+                    .feature-grid-v2 { grid-template-columns: repeat(2, 1fr); }
+                    .premium-cta-v2 { grid-template-columns: 1fr; text-align: center; }
+                    .cta-actions-v2 { justify-content: center; }
+                    .cta-title-v2 { font-size: 2.75rem; }
+                    .cta-visual-v2 { display: none; }
                 }
-                
-                @media (max-width: 768px) {
-                    .hero-section { padding: 3rem 0; }
-                    .hero-title { font-size: 2.75rem; }
-                    .search-bar-luxury { flex-direction: column; padding: 1rem; gap: 0.75rem; width: 100%; border-radius: 1.5rem; }
-                    .search-group { width: 100%; border-right: none !important; border-bottom: 1px solid #f1f5f9; }
-                    .search-btn-primary { width: 100%; border-radius: 0.75rem; height: 3rem; margin: 0; }
-                    .search-select, .search-input { padding-left: 3rem; }
-                    .search-icon { left: 1rem; }
 
-                    .section-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-                    .listings-grid { grid-template-columns: 1fr; }
-                    .hero-meta { flex-direction: column; gap: 0.5rem; }
+                @media (max-width: 1024px) {
+                    .how-grid-v3 { grid-template-columns: 1fr; }
+                }
+
+                @media (max-width: 640px) {
+                    .feature-grid-v2 { grid-template-columns: 1fr; }
+                    .premium-cta-v2 { padding: 4rem 2rem; }
+                    .cta-actions-v2 { flex-direction: column; }
+                    .cta-btn-v2 { width: 100%; }
                 }
             `}</style>
         </div>

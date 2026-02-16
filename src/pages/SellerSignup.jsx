@@ -66,38 +66,69 @@ export default function SellerSignup() {
     };
 
     return (
-        <div className="container" style={{ maxWidth: '500px', marginTop: '4rem', padding: '2rem' }}>
-            <h1 className="page-title" style={{ textAlign: 'center', marginBottom: '1.5rem' }}>Start Selling</h1>
-            <form onSubmit={handleSignup} className="card" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Full Name</label>
-                    <input type="text" name="name" placeholder="John Doe" required className="input-field" onChange={handleChange} />
+        <div className="signup-page-wrapper">
+            <header className="page-header section-bg">
+                <div className="container">
+                    <h1 className="page-title">Start Selling Today</h1>
+                    <p className="page-subtitle">Join India's fastest growing pre-owned vehicle marketplace</p>
                 </div>
-                <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Email Address</label>
-                    <input type="email" name="email" placeholder="john@example.com" required className="input-field" onChange={handleChange} />
-                </div>
-                <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Password</label>
-                    <input type="password" name="password" placeholder="Min. 6 characters" required className="input-field" onChange={handleChange} minLength={6} />
-                </div>
-                <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Phone Number</label>
-                    <input type="tel" name="phone" placeholder="+91 98765 43210" required className="input-field" onChange={handleChange} />
-                </div>
-                <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>City</label>
-                    <input type="text" name="city" placeholder="Mumbai, Delhi, etc." required className="input-field" onChange={handleChange} />
-                </div>
+            </header>
 
-                <button type="submit" className="btn btn-primary" disabled={loading} style={{ marginTop: '1rem', padding: '1rem' }}>
-                    {loading ? 'Creating Account...' : 'Create Seller Account'}
-                </button>
+            <div className="container" style={{ maxWidth: '600px', padding: '4rem 1.5rem' }}>
+                <form onSubmit={handleSignup} className="card animate-fade-in" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }} className="signup-grid">
+                        <div style={{ gridColumn: 'span 2' }}>
+                            <label className="input-label">Full Name</label>
+                            <input type="text" name="name" placeholder="John Doe" required className="input-field" onChange={handleChange} />
+                        </div>
+                        <div>
+                            <label className="input-label">Email Address</label>
+                            <input type="email" name="email" placeholder="john@example.com" required className="input-field" onChange={handleChange} />
+                        </div>
+                        <div>
+                            <label className="input-label">Password</label>
+                            <input type="password" name="password" placeholder="Min. 6 characters" required className="input-field" onChange={handleChange} minLength={6} />
+                        </div>
+                        <div>
+                            <label className="input-label">Phone Number</label>
+                            <input type="tel" name="phone" placeholder="98765 43210" required className="input-field" onChange={handleChange} />
+                        </div>
+                        <div>
+                            <label className="input-label">City</label>
+                            <input type="text" name="city" placeholder="Mumbai, Delhi, etc." required className="input-field" onChange={handleChange} />
+                        </div>
+                    </div>
 
-                <p style={{ textAlign: 'center', marginTop: '1.5rem', color: 'var(--text-muted)' }}>
-                    Already have an account? <Link to="/seller-login" style={{ color: 'var(--primary)', fontWeight: '600' }}>Login</Link>
-                </p>
-            </form>
+                    <button type="submit" className="btn btn-primary" disabled={loading} style={{ marginTop: '1rem', width: '100%' }}>
+                        {loading ? 'Creating Your Profile...' : 'Complete Registration'}
+                    </button>
+
+                    <p style={{ textAlign: 'center', marginTop: '1rem', color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+                        Already have an account? <Link to="/seller-login" style={{ color: 'var(--accent)', fontWeight: '700' }}>Sign In here</Link>
+                    </p>
+                </form>
+            </div>
+
+            <style>{`
+                .signup-page-wrapper {
+                    min-height: 100vh;
+                    background: var(--bg-subtle);
+                    padding-bottom: 5rem;
+                }
+                .input-label {
+                    display: block;
+                    margin-bottom: 0.5rem;
+                    font-weight: 700;
+                    font-size: 0.85rem;
+                    color: var(--text-secondary);
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                }
+                @media (max-width: 640px) {
+                    .signup-grid { grid-template-columns: 1fr !important; }
+                    .signup-grid div { grid-column: span 1 !important; }
+                }
+            `}</style>
         </div>
     );
 }

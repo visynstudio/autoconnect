@@ -46,10 +46,10 @@ export default function VehicleDetails() {
     }
 
     return (
-        <div className="details-page-container">
-            <div className="container" style={{ maxWidth: '1280px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+        <div className="details-page-wrapper">
+            <div className="container details-inner">
                 <Link to="/browse" className="back-link">
-                    <ArrowLeft size={20} /> Back to Browse
+                    <ArrowLeft size={18} /> Back to Marketplace
                 </Link>
 
                 <div className="details-grid">
@@ -85,134 +85,143 @@ export default function VehicleDetails() {
                             <p className="location-text"><MapPin size={16} /> {vehicle.location}</p>
                         </div>
 
-                        <div className="specs-grid">
-                            <div className="spec-item">
-                                <Calendar size={20} className="spec-icon" />
-                                <div>
-                                    <label>Year</label>
-                                    <span>{vehicle.year}</span>
+                        <div className="specs-grid-v2">
+                            <div className="spec-item-v2">
+                                <Calendar size={20} className="spec-icon-v2" />
+                                <div className="spec-content-v2">
+                                    <label className="spec-label-v2">Year</label>
+                                    <span className="spec-value-v2">{vehicle.year}</span>
                                 </div>
                             </div>
-                            <div className="spec-item">
-                                <Fuel size={20} className="spec-icon" />
-                                <div>
-                                    <label>Fuel</label>
-                                    <span>{vehicle.fuel_type}</span>
+                            <div className="spec-item-v2">
+                                <Fuel size={20} className="spec-icon-v2" />
+                                <div className="spec-content-v2">
+                                    <label className="spec-label-v2">Fuel</label>
+                                    <span className="spec-value-v2">{vehicle.fuel_type}</span>
                                 </div>
                             </div>
-                            <div className="spec-item">
-                                <Gauge size={20} className="spec-icon" />
-                                <div>
-                                    <label>Distance</label>
-                                    <span>{vehicle.km_driven.toLocaleString()} km</span>
+                            <div className="spec-item-v2">
+                                <Gauge size={20} className="spec-icon-v2" />
+                                <div className="spec-content-v2">
+                                    <label className="spec-label-v2">Distance</label>
+                                    <span className="spec-value-v2">{vehicle.km_driven.toLocaleString()} km</span>
                                 </div>
                             </div>
-                            <div className="spec-item">
-                                <span className="spec-icon" style={{ fontWeight: '800', fontSize: '14px' }}>type</span>
-                                <div>
-                                    <label>Type</label>
-                                    <span>{vehicle.vehicle_type}</span>
+                            <div className="spec-item-v2">
+                                <Gauge size={20} className="spec-icon-v2" />
+                                <div className="spec-content-v2">
+                                    <label className="spec-label-v2">Category</label>
+                                    <span className="spec-value-v2">{vehicle.vehicle_type}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="seller-card">
-                            <h3 className="section-label">Seller Details</h3>
-                            <div className="seller-info">
-                                <div className="seller-avatar">
+                        <div className="seller-card-premium">
+                            <h3 className="section-label-premium">Seller Network</h3>
+                            <div className="seller-info-v2">
+                                <div className="seller-avatar-v2">
                                     {vehicle.sellers?.name?.[0] || 'S'}
                                 </div>
                                 <div>
-                                    <p className="seller-name">{vehicle.sellers?.name || 'Private Seller'}</p>
-                                    <p className="seller-location">{vehicle.sellers?.city || vehicle.location}</p>
+                                    <p className="seller-name-v2">{vehicle.sellers?.name || 'Private Seller'}</p>
+                                    <p className="seller-location-v2">{vehicle.sellers?.city || vehicle.location}</p>
                                 </div>
                             </div>
 
-                            <div className="action-buttons">
-                                <a href={`tel:${vehicle.sellers?.phone}`} className="btn-contact call">
-                                    <Phone size={20} /> Call Seller
+                            <div className="action-btns-v2">
+                                <a href={`tel:${vehicle.sellers?.phone}`} className="btn btn-primary btn-call">
+                                    <Phone size={20} /> Call Seller Now
                                 </a>
-                                <a href={`https://wa.me/${vehicle.sellers?.phone}`} target="_blank" rel="noreferrer" className="btn-contact whatsapp">
+                                <a href={`https://wa.me/${vehicle.sellers?.phone}`} target="_blank" rel="noreferrer" className="btn btn-whatsapp">
                                     <MessageCircle size={20} /> Chat on WhatsApp
                                 </a>
                             </div>
                         </div>
 
-                        <div className="description-box">
-                            <h3 className="section-label">Description</h3>
-                            <p className="description-text">{vehicle.description || 'No description provided.'}</p>
+                        <div className="description-card-premium">
+                            <h3 className="section-label-premium">Listing Overview</h3>
+                            <p className="description-text-v2">{vehicle.description || 'No description provided.'}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <style>{`
-                .details-page-container {
-                    background-color: #f8fafc;
+                .details-page-wrapper {
+                    background-color: var(--bg-subtle);
                     min-height: 100vh;
-                    padding-bottom: 4rem;
+                    padding-bottom: 5rem;
+                }
+
+                .details-inner {
+                    padding: 2rem 0;
                 }
 
                 .back-link {
                     display: inline-flex;
                     align-items: center;
                     gap: 0.5rem;
-                    color: #64748b;
-                    font-weight: 600;
+                    color: var(--text-secondary);
+                    font-weight: 700;
                     margin-bottom: 2rem;
-                    text-decoration: none;
-                    transition: color 0.2s;
+                    transition: all 0.2s;
+                    font-size: 0.95rem;
                 }
-                .back-link:hover { color: #0f172a; }
+                .back-link:hover { color: var(--accent); transform: translateX(-4px); }
 
                 .details-grid {
                     display: grid;
-                    grid-template-columns: 1.2fr 0.8fr;
-                    gap: 3rem;
+                    grid-template-columns: 1.25fr 0.75fr;
+                    gap: 2.5rem;
                     align-items: start;
                 }
 
                 /* Gallery Styling */
                 .gallery-section {
                     position: sticky;
-                    top: 2rem;
+                    top: 100px;
                 }
+
                 .main-image-container {
                     background: #000;
-                    border-radius: 1rem;
+                    border-radius: 12px;
                     overflow: hidden;
-                    aspect-ratio: 16/9;
+                    aspect-ratio: 16/10;
                     margin-bottom: 1rem;
-                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                    box-shadow: var(--shadow-md);
+                    border: 1px solid var(--border);
                 }
+
                 .main-image {
                     width: 100%;
                     height: 100%;
                     object-fit: contain;
                 }
+
                 .thumbnails-scroll {
                     display: flex;
                     gap: 0.75rem;
                     overflow-x: auto;
-                    padding-bottom: 0.5rem;
-                    scrollbar-width: thin;
+                    padding-bottom: 0.75rem;
                 }
+
                 .thumbnail-btn {
                     flex-shrink: 0;
                     width: 100px;
-                    aspect-ratio: 16/9;
-                    border-radius: 0.5rem;
+                    aspect-ratio: 16/10;
+                    border-radius: 8px;
                     overflow: hidden;
                     border: 2px solid transparent;
                     cursor: pointer;
                     padding: 0;
-                    opacity: 0.7;
+                    opacity: 0.6;
                     transition: all 0.2s;
                 }
                 .thumbnail-btn:hover { opacity: 1; }
                 .thumbnail-btn.active {
-                    border-color: #2563eb;
+                    border-color: var(--accent);
                     opacity: 1;
+                    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
                 }
                 .thumbnail-btn img {
                     width: 100%;
@@ -221,146 +230,146 @@ export default function VehicleDetails() {
                 }
 
                 /* Info Styling */
-                .header-info { margin-bottom: 2rem; }
+                .header-info { margin-bottom: 2.5rem; }
                 .brand-badge {
                     display: inline-block;
                     background: #dbeafe;
-                    color: #2563eb;
-                    padding: 0.25rem 0.75rem;
-                    border-radius: 2rem;
-                    font-size: 0.85rem;
-                    font-weight: 700;
+                    color: var(--accent);
+                    padding: 0.35rem 1rem;
+                    border-radius: 20px;
+                    font-size: 0.75rem;
+                    font-weight: 800;
                     text-transform: uppercase;
-                    margin-bottom: 0.75rem;
+                    margin-bottom: 1rem;
                 }
+
                 .vehicle-title {
+                    font-size: 2.5rem;
+                    font-weight: 800;
+                    color: var(--primary);
+                    line-height: 1.1;
+                    margin-bottom: 0.75rem;
+                    letter-spacing: -0.04em;
+                }
+
+                .price-tag {
                     font-size: 2.25rem;
                     font-weight: 800;
-                    color: #0f172a;
-                    line-height: 1.1;
-                    margin-bottom: 0.5rem;
+                    color: var(--accent);
+                    margin-bottom: 0.75rem;
+                    letter-spacing: -0.02em;
                 }
-                .price-tag {
-                    font-size: 2rem;
-                    font-weight: 700;
-                    color: #2563eb;
-                    margin-bottom: 0.5rem;
-                }
+
                 .location-text {
-                    color: #64748b;
+                    color: var(--text-secondary);
                     display: flex;
                     align-items: center;
                     gap: 0.5rem;
-                    font-weight: 500;
+                    font-weight: 600;
                 }
 
-                .specs-grid {
+                .specs-grid-v2 {
                     display: grid;
                     grid-template-columns: repeat(2, 1fr);
                     gap: 1rem;
-                    margin-bottom: 2rem;
+                    margin-bottom: 2.5rem;
                 }
-                .spec-item {
-                    background: white;
-                    padding: 1rem;
-                    border-radius: 0.75rem;
-                    border: 1px solid #e2e8f0;
-                    display: flex;
-                    align-items: center;
-                    gap: 1rem;
-                }
-                .spec-icon { color: #64748b; }
-                .spec-item div { display: flex; flex-direction: column; }
-                .spec-item label { font-size: 0.75rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; }
-                .spec-item span { font-size: 1rem; font-weight: 600; color: #0f172a; text-transform: capitalize; }
 
-                .seller-card {
-                    background: white;
-                    border: 1px solid #e2e8f0;
-                    padding: 1.5rem;
-                    border-radius: 1rem;
-                    margin-bottom: 2rem;
-                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-                }
-                .section-label {
-                    font-size: 0.9rem;
-                    color: #94a3b8;
-                    text-transform: uppercase;
-                    letter-spacing: 0.05em;
-                    font-weight: 700;
-                    margin-bottom: 1rem;
-                }
-                .seller-info {
+                .spec-item-v2 {
+                    background: #ffffff;
+                    padding: 1.25rem;
+                    border-radius: 12px;
+                    border: 1px solid var(--border);
                     display: flex;
                     align-items: center;
                     gap: 1rem;
-                    margin-bottom: 1.5rem;
                 }
-                .seller-avatar {
-                    width: 3.5rem;
-                    height: 3.5rem;
-                    background: #f1f5f9;
+
+                .spec-icon-v2 { color: var(--text-secondary); }
+                .spec-content-v2 { display: flex; flex-direction: column; }
+                .spec-label-v2 { font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+                .spec-value-v2 { font-size: 1.05rem; font-weight: 700; color: var(--primary); }
+
+                .seller-card-premium {
+                    background: #ffffff;
+                    border: 1px solid var(--border);
+                    padding: 2rem;
+                    border-radius: 12px;
+                    margin-bottom: 2.5rem;
+                    box-shadow: var(--shadow-sm);
+                }
+
+                .section-label-premium {
+                    font-size: 0.75rem;
+                    color: var(--text-muted);
+                    text-transform: uppercase;
+                    letter-spacing: 0.1em;
+                    font-weight: 800;
+                    margin-bottom: 1.25rem;
+                    display: block;
+                }
+
+                .seller-info-v2 {
+                    display: flex;
+                    align-items: center;
+                    gap: 1.25rem;
+                    margin-bottom: 2rem;
+                }
+
+                .seller-avatar-v2 {
+                    width: 64px;
+                    height: 64px;
+                    background: var(--bg-subtle);
                     border-radius: 50%;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-weight: 700;
+                    font-weight: 800;
                     font-size: 1.5rem;
-                    color: #64748b;
+                    color: var(--text-secondary);
+                    border: 2px solid #ffffff;
+                    box-shadow: var(--shadow-sm);
                 }
-                .seller-name { font-size: 1.1rem; font-weight: 700; color: #0f172a; margin: 0; }
-                .seller-location { color: #64748b; font-size: 0.9rem; margin: 0; }
 
-                .action-buttons {
+                .seller-name-v2 { font-size: 1.25rem; font-weight: 800; color: var(--primary); margin: 0; }
+                .seller-location-v2 { color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem; }
+
+                .action-btns-v2 {
                     display: flex;
                     flex-direction: column;
-                    gap: 0.75rem;
+                    gap: 1rem;
                 }
-                .btn-contact {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 0.75rem;
-                    padding: 1rem;
-                    border-radius: 0.75rem;
-                    font-weight: 600;
-                    text-decoration: none;
-                    transition: transform 0.1s;
-                }
-                .btn-contact:active { transform: scale(0.98); }
-                .btn-contact.call { background: #0f172a; color: white; }
-                .btn-contact.call:hover { background: #1e293b; }
-                .btn-contact.whatsapp { background: #dcfce7; color: #16a34a; }
-                .btn-contact.whatsapp:hover { background: #bbf7d0; }
 
-                .description-box {
-                    background: white;
-                    padding: 1.5rem;
-                    border-radius: 1rem;
-                    border: 1px solid #e2e8f0;
+                .btn-call { background: var(--primary); color: #ffffff; }
+                .btn-whatsapp { background: #EBFDF1; color: #16A34A; border: 1px solid #DCFCE7; }
+                .btn-whatsapp:hover { background: #DCFCE7; transform: translateY(-1px); }
+
+                .description-card-premium {
+                    background: #ffffff;
+                    padding: 2rem;
+                    border-radius: 12px;
+                    border: 1px solid var(--border);
                 }
-                .description-text {
-                    color: #475569;
-                    line-height: 1.7;
+
+                .description-text-v2 {
+                    color: var(--text-secondary);
+                    line-height: 1.8;
+                    font-size: 1rem;
                     white-space: pre-line;
                 }
 
                 /* Responsive Styles */
                 @media (max-width: 1024px) {
-                    .details-grid {
-                        grid-template-columns: 1fr;
-                        gap: 2rem;
-                    }
+                    .details-grid { grid-template-columns: 1fr; gap: 2.5rem; }
                     .gallery-section { position: relative; top: 0; }
-                    .vehicle-title { font-size: 2rem; }
+                    .vehicle-title { font-size: 2.25rem; }
                 }
 
                 @media (max-width: 640px) {
-                    .container { padding: 1.5rem 1rem !important; }
-                    .vehicle-title { font-size: 1.75rem; }
-                    .price-tag { font-size: 1.75rem; }
-                    .specs-grid { grid-template-columns: 1fr; gap: 0.75rem; }
-                    .spec-item { padding: 0.75rem; }
+                    .vehicle-title { font-size: 1.85rem; }
+                    .price-tag { font-size: 1.85rem; }
+                    .specs-grid-v2 { grid-template-columns: 1fr; }
+                    .seller-card-premium, .description-card-premium { padding: 1.5rem; }
                 }
             `}</style>
         </div>

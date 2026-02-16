@@ -1,6 +1,5 @@
-
 import { Link } from 'react-router-dom';
-import { MapPin } from 'lucide-react';
+import { MapPin, ArrowRight } from 'lucide-react';
 
 export default function VehicleCard({ vehicle }) {
     const mainImage = vehicle.vehicle_images?.[0]?.image_url || 'https://placehold.co/600x400?text=No+Image';
@@ -14,149 +13,174 @@ export default function VehicleCard({ vehicle }) {
     };
 
     return (
-        <Link
-            to={`/vehicle/${vehicle.id}`}
-            className="vehicle-card-luxury"
-        >
-            {/* Image Container */}
-            <div className="card-image-wrapper">
+        <div className="apnicar-card">
+            <div className="card-media">
                 <img
                     src={mainImage}
                     alt={`${vehicle.brand} ${vehicle.model}`}
                     loading="lazy"
                 />
-                <div className="card-overlay"></div>
+                <div className="category-badge">
+                    {vehicle.vehicle_type}
+                </div>
             </div>
 
-            {/* Content */}
-            <div className="card-content">
-                <div className="card-header">
-                    <h3 className="card-title">
+            <div className="card-body">
+                <div className="card-main-info">
+                    <h3 className="vehicle-name">
                         {vehicle.brand} {vehicle.model}
                     </h3>
-                    <p className="card-price">
+                    <div className="price-tag">
                         {formatPrice(vehicle.price)}
-                    </p>
+                    </div>
                 </div>
 
-                <div className="card-specs">
+                <div className="location-info">
+                    <MapPin size={14} />
+                    <span>{vehicle.city || vehicle.location}</span>
+                </div>
+
+                <div className="spec-row">
                     <span>{vehicle.year}</span>
                     <span className="dot">•</span>
-                    <span style={{ textTransform: 'capitalize' }}>{vehicle.fuel_type}</span>
+                    <span className="fuel-text">{vehicle.fuel_type}</span>
                     <span className="dot">•</span>
                     <span>{vehicle.km_driven?.toLocaleString()} km</span>
                 </div>
 
-                <div className="card-footer">
-                    <div className="location-badge">
-                        <MapPin size={14} className="icon" />
-                        <span>{vehicle.city || vehicle.location}</span>
-                    </div>
-                </div>
+                <Link to={`/vehicle/${vehicle.id}`} className="view-btn">
+                    <span>View Details</span>
+                    <ArrowRight size={16} />
+                </Link>
             </div>
 
             <style>{`
-                .vehicle-card-luxury {
-                    display: block;
+                .apnicar-card {
                     background: white;
-                    border-radius: var(--radius-lg);
+                    border-radius: 12px;
                     border: 1px solid var(--border);
                     overflow: hidden;
-                    text-decoration: none;
-                    transition: all 0.3s ease;
-                    height: 100%;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                     display: flex;
                     flex-direction: column;
+                    height: 100%;
                 }
 
-                .vehicle-card-luxury:hover {
-                    transform: translateY(-5px);
-                    box-shadow: var(--shadow-lg);
-                    border-color: #cbd5e1;
+                .apnicar-card:hover {
+                    transform: translateY(-8px);
+                    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+                    border-color: var(--accent);
                 }
 
-                .card-image-wrapper {
+                .card-media {
                     position: relative;
                     aspect-ratio: 4/3;
                     overflow: hidden;
                     background: #f1f5f9;
                 }
 
-                .card-image-wrapper img {
+                .card-media img {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
                     transition: transform 0.5s ease;
                 }
 
-                .vehicle-card-luxury:hover .card-image-wrapper img {
-                    transform: scale(1.05);
+                .apnicar-card:hover .card-media img {
+                    transform: scale(1.1);
                 }
 
-                .card-content {
-                    padding: 1.25rem;
+                .category-badge {
+                    position: absolute;
+                    top: 12px;
+                    right: 12px;
+                    background: rgba(255, 255, 255, 0.9);
+                    backdrop-filter: blur(4px);
+                    padding: 4px 10px;
+                    border-radius: 6px;
+                    font-size: 0.7rem;
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    color: var(--primary);
+                    border: 1px solid rgba(0,0,0,0.05);
+                    letter-spacing: 0.05em;
+                }
+
+                .card-body {
+                    padding: 1.5rem;
                     display: flex;
                     flex-direction: column;
                     flex: 1;
-                    gap: 0.75rem;
                 }
 
-                .card-header {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.25rem;
+                .card-main-info {
+                    margin-bottom: 0.5rem;
                 }
 
-                .card-title {
-                    font-size: 1.1rem;
-                    font-weight: 700;
-                    color: var(--text-main);
-                    line-height: 1.3;
-                    /* Truncate if too long */
-                    display: -webkit-box;
-                    -webkit-line-clamp: 1;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
+                .vehicle-name {
+                    font-size: 1rem;
+                    font-weight: 600;
+                    color: var(--text-secondary);
+                    margin-bottom: 0.25rem;
                 }
 
-                .card-price {
-                    font-size: 1.25rem;
+                .price-tag {
+                    font-size: 1.4rem;
                     font-weight: 800;
-                    color: var(--accent);
+                    color: var(--primary);
                     letter-spacing: -0.02em;
                 }
 
-                .card-specs {
+                .location-info {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                    color: var(--text-muted);
+                    font-size: 0.85rem;
+                    font-weight: 500;
+                    margin-bottom: 1rem;
+                }
+
+                .spec-row {
                     display: flex;
                     align-items: center;
                     gap: 0.5rem;
-                    font-size: 0.85rem;
-                    color: var(--text-secondary);
-                    font-weight: 500;
-                }
-
-                .dot { color: #cbd5e1; }
-
-                .card-footer {
-                    margin-top: auto;
-                    padding-top: 1rem;
-                    border-top: 1px solid var(--border);
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }
-
-                .location-badge {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.35rem;
                     font-size: 0.8rem;
-                    color: var(--text-muted);
-                    font-weight: 500;
+                    color: var(--text-secondary);
+                    font-weight: 600;
+                    margin-bottom: 1.5rem;
+                    background: var(--bg-subtle);
+                    padding: 0.5rem 0.75rem;
+                    border-radius: 8px;
+                    width: fit-content;
                 }
-                
-                .location-badge .icon { color: var(--text-muted); }
+
+                .fuel-text { text-transform: capitalize; }
+                .dot { color: var(--border); }
+
+                .view-btn {
+                    margin-top: auto;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.5rem;
+                    background: #f8fafc;
+                    color: var(--primary);
+                    padding: 0.8rem;
+                    border-radius: 10px;
+                    font-weight: 700;
+                    font-size: 0.9rem;
+                    transition: all 0.2s;
+                    border: 1px solid var(--border);
+                    text-decoration: none;
+                }
+
+                .view-btn:hover {
+                    background: var(--primary);
+                    color: white;
+                    border-color: var(--primary);
+                }
             `}</style>
-        </Link>
+        </div>
     );
 }

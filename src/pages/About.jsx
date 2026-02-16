@@ -7,110 +7,64 @@ import {
 
 export default function About() {
     return (
-        <div style={{ backgroundColor: '#ffffff', color: '#1e293b' }}>
-
+        <div className="about-page-wrapper">
             {/* 1️⃣ PAGE HEADER */}
-            <section style={{
-                backgroundColor: '#f8fafc',
-                padding: '4rem 1rem',
-                textAlign: 'center',
-                borderBottom: '1px solid #e2e8f0'
-            }}>
-                <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    <h1 style={{
-                        fontSize: '3rem', fontWeight: '800', color: '#0f172a', marginBottom: '1rem', letterSpacing: '-1px'
-                    }}>
-                        About Us
-                    </h1>
-                    <p style={{
-                        fontSize: '1.25rem', color: '#64748b', fontWeight: '500'
-                    }}>
-                        Connecting buyers and sellers directly.
-                    </p>
+            <header className="page-header section-bg">
+                <div className="container">
+                    <h1 className="page-title">Our Story</h1>
+                    <p className="page-subtitle">We're bridging the gap between buyers and sellers, making vehicle trading simple, direct, and commission-free.</p>
                 </div>
-            </section>
+            </header>
 
             {/* 2️⃣ WHO WE ARE */}
-            <section style={{ padding: '5rem 1rem' }}>
-                <div className="container" style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-                    <h2 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '1.5rem', color: '#0f172a' }}>
-                        Who We Are
-                    </h2>
-                    <p style={{ fontSize: '1.125rem', lineHeight: '1.8', color: '#475569' }}>
-                        We are a simple and trusted platform that helps people buy and sell second-hand vehicles directly.
-                        Our goal is to remove agents, commissions, and unnecessary steps, making vehicle buying and selling fast and transparent.
-                    </p>
-                </div>
-            </section>
-
-            {/* 3️⃣ OUR MISSION */}
-            <section style={{ padding: '5rem 1rem', backgroundColor: '#f1f5f9' }}>
-                <div className="container" style={{ maxWidth: '900px', margin: '0 auto' }}>
-                    <div style={{
-                        backgroundColor: '#ffffff',
-                        padding: '3rem',
-                        borderRadius: '1.5rem',
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        textAlign: 'center'
-                    }}>
-                        <h2 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '1.5rem', color: '#0f172a' }}>
-                            Our Mission
-                        </h2>
-                        <p style={{ fontSize: '1.25rem', lineHeight: '1.6', color: '#334155', maxWidth: '700px' }}>
-                            To create a trusted marketplace where vehicle owners and buyers can connect directly,
-                            without middlemen, hidden charges, or complicated processes.
+            <section className="section">
+                <div className="container">
+                    <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
+                        <h2 className="section-title">Who We Are</h2>
+                        <p className="section-desc">
+                            ApniCar is a trusted marketplace designed for the modern Indian vehicle owner.
+                            We realized that the traditional process was broken—filled with middlemen, hidden fees, and complex paperwork.
+                            We built this platform to put the power back in your hands.
                         </p>
                     </div>
                 </div>
             </section>
 
-            {/* 4️⃣ WHY WE EXIST */}
-            <section style={{ padding: '5rem 1rem' }}>
-                <div className="container" style={{ maxWidth: '1000px', margin: '0 auto' }}>
+            {/* 3️⃣ MISSION CARD */}
+            <section className="section" style={{ paddingTop: 0 }}>
+                <div className="container">
+                    <div className="mission-card card animate-fade-in">
+                        <h2 className="mission-title">Our Mission</h2>
+                        <p className="mission-text">
+                            "To build the most transparent and efficient direct-to-consumer vehicle marketplace in India."
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            {/* 4️⃣ CORE VALUES */}
+            <section className="section section-bg">
+                <div className="container">
                     <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-                        <h2 style={{ fontSize: '2rem', fontWeight: '700', color: '#0f172a' }}>Why We Exist</h2>
-                        <p style={{ color: '#64748b', marginTop: '0.5rem' }}>Eliminating the hassle from vehicle trading.</p>
+                        <h2 className="section-title">The ApniCar Advantage</h2>
+                        <p className="section-desc">Why thousands trust us for their vehicle trading needs.</p>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+                    <div className="grid-3-2-1">
                         {[
-                            { icon: Handshake, title: 'No Agents or Brokers', desc: 'Direct deals only.' },
-                            { icon: DollarSign, title: 'No Commissions', desc: 'Keep 100% of the sale price.' },
-                            { icon: Phone, title: 'Direct Contact', desc: 'Speak directly with the owner.' },
-                            { icon: FilePlus, title: 'Simple Listings', desc: 'Post an ad in minutes.' },
-                            { icon: Search, title: 'No Buyer Login', desc: 'Browse freely without signup.' },
+                            { icon: Handshake, title: 'Direct Connectivity', desc: 'No more middlemen. Talk to owners directly.' },
+                            { icon: DollarSign, title: 'Zero Commission', desc: 'Every rupee stays with the buyer or seller.' },
+                            { icon: Phone, title: 'Instant Contact', desc: 'Call or WhatsApp sellers in one click.' },
+                            { icon: FilePlus, title: 'Lightning Listing', desc: 'Post your vehicle ad in under 2 minutes.' },
+                            { icon: Search, title: 'Transparent Browsing', desc: 'No mandatory logins to see phone numbers.' },
+                            { icon: ShieldCheck, title: 'Verified Seller Tools', desc: 'Smart tools to help you sell faster.' },
                         ].map((item, index) => (
-                            <div key={index} style={{
-                                padding: '1.5rem',
-                                borderRadius: '1rem',
-                                border: '1px solid #e2e8f0',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '1rem',
-                                transition: 'transform 0.2s ease-in-out'
-                            }}
-                                onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-                                onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                            >
-                                <div style={{
-                                    width: '48px', height: '48px',
-                                    backgroundColor: '#eff6ff',
-                                    borderRadius: '50%',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    color: '#3b82f6',
-                                    flexShrink: 0
-                                }}>
-                                    <item.icon size={24} />
+                            <div key={index} className="advantage-card card">
+                                <div className="advantage-icon-box">
+                                    <item.icon size={26} strokeWidth={1.5} />
                                 </div>
-                                <div style={{ flex: 1 }}>
-                                    <h3 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#1e293b' }}>{item.title}</h3>
-                                    <p style={{ fontSize: '0.9rem', color: '#64748b' }}>{item.desc}</p>
-                                </div>
+                                <h3 className="advantage-title">{item.title}</h3>
+                                <p className="advantage-text">{item.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -118,80 +72,160 @@ export default function About() {
             </section>
 
             {/* 5️⃣ HOW IT WORKS */}
-            <section style={{ padding: '5rem 1rem', backgroundColor: '#f8fafc' }}>
-                <div className="container" style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
-                    <h2 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '3rem', color: '#0f172a' }}>
-                        How It Works
-                    </h2>
+            <section className="section">
+                <div className="container">
+                    <h2 className="section-title" style={{ textAlign: 'center', marginBottom: '4rem' }}>Simplified Process</h2>
 
-                    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '3rem' }}>
+                    <div className="process-grid">
                         {[
-                            { step: '1', title: 'Seller Lists Vehicle', desc: 'Takes 2 minutes to post details & photos.', icon: FilePlus },
-                            { step: '2', title: 'Buyer Finds Vehicle', desc: 'Search by city, budget, or model.', icon: Search },
-                            { step: '3', title: 'Direct Contact', desc: 'Call or message the seller directly.', icon: Phone },
+                            { step: '01', title: 'List Your Ride', desc: 'Upload high-quality photos and set your price.', icon: FilePlus },
+                            { step: '02', title: 'Smart Match', desc: 'Buyers find your listing through localized search.', icon: Search },
+                            { step: '03', title: 'Direct Deal', desc: 'Talk directly, inspect, and close the deal.', icon: Phone },
                         ].map((item, i) => (
-                            <div key={i} style={{ flex: '1 1 250px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                <div style={{
-                                    width: '64px', height: '64px',
-                                    backgroundColor: '#ffffff',
-                                    border: '1px solid #e2e8f0',
-                                    borderRadius: '50%',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    marginBottom: '1.5rem',
-                                    color: '#0f172a',
-                                    fontSize: '1.5rem',
-                                    fontWeight: '700',
-                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
-                                }}>
-                                    {item.step}
-                                </div>
-                                <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem', color: '#1e293b' }}>{item.title}</h3>
-                                <p style={{ color: '#64748b', fontSize: '0.95rem' }}>{item.desc}</p>
+                            <div key={i} className="process-item">
+                                <div className="step-number">{item.step}</div>
+                                <h3 className="process-title">{item.title}</h3>
+                                <p className="process-text">{item.desc}</p>
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* 6️⃣ TRUST & TRANSPARENCY */}
-            <section style={{ padding: '5rem 1rem' }}>
-                <div className="container" style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-                    <div style={{ display: 'inline-flex', padding: '1rem', backgroundColor: '#eff6ff', borderRadius: '50%', marginBottom: '1.5rem', color: '#3b82f6' }}>
-                        <ShieldCheck size={48} />
-                    </div>
-                    <h2 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '1.5rem', color: '#0f172a' }}>
-                        Trust & Transparency
-                    </h2>
-                    <p style={{ fontSize: '1.125rem', lineHeight: '1.7', color: '#475569' }}>
-                        We do not act as a middleman. We do not handle payments.
-                        We simply connect buyers and sellers directly, so both sides stay in control
-                        and negotiate freely without interference.
-                    </p>
-                </div>
-            </section>
-
-            {/* 7️⃣ CALL TO ACTION */}
-            <section style={{ backgroundColor: '#f1f5f9', padding: '5rem 1rem', textAlign: 'center' }}>
-                <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
-                    <h2 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '1rem', color: '#0f172a' }}>
-                        Ready to buy or sell a vehicle?
-                    </h2>
-                    <p style={{ fontSize: '1.1rem', color: '#64748b', marginBottom: '2.5rem' }}>
-                        Join thousands of users trading directly today.
-                    </p>
-                    <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                        <Link to="/browse" className="btn btn-primary" style={{ padding: '1rem 2.5rem', fontSize: '1rem' }}>
-                            Browse Vehicles
-                        </Link>
-                        <Link to="/seller-signup" className="btn btn-secondary" style={{ padding: '1rem 2.5rem', fontSize: '1rem' }}>
-                            Post Your Vehicle
-                        </Link>
+            {/* 6️⃣ CTA */}
+            <section className="section section-bg">
+                <div className="container">
+                    <div className="cta-box card">
+                        <h2 className="cta-title">Join the Revolution</h2>
+                        <p className="cta-text">Ready to experience the future of vehicle trading?</p>
+                        <div className="cta-buttons">
+                            <Link to="/browse" className="btn btn-primary" style={{ minWidth: '200px' }}>
+                                Start Browsing
+                            </Link>
+                            <Link to="/seller-signup" className="btn btn-accent" style={{ minWidth: '200px' }}>
+                                Start Selling
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </section>
 
+            <style>{`
+                .about-page-wrapper {
+                    background-color: var(--bg-page);
+                }
+                
+                .section-title {
+                    font-size: 2.25rem;
+                    font-weight: 800;
+                    color: var(--primary);
+                    margin-bottom: 1rem;
+                }
+
+                .section-desc {
+                    font-size: 1.15rem;
+                    line-height: 1.7;
+                    color: var(--text-secondary);
+                    max-width: 800px;
+                    margin: 0 auto;
+                }
+
+                .mission-card {
+                    background: linear-gradient(135deg, var(--primary) 0%, #1e293b 100%);
+                    color: #ffffff;
+                    text-align: center;
+                    padding: 4rem 2rem;
+                    border: none;
+                }
+
+                .mission-title {
+                    color: var(--accent);
+                    font-size: 0.9rem;
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    letter-spacing: 0.1em;
+                    margin-bottom: 1.5rem;
+                }
+
+                .mission-text {
+                    font-size: 1.85rem;
+                    font-weight: 700;
+                    line-height: 1.4;
+                    max-width: 700px;
+                    margin: 0 auto;
+                }
+
+                .advantage-card {
+                    text-align: center;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1.25rem;
+                    padding: 2.5rem 1.5rem;
+                }
+
+                .advantage-icon-box {
+                    width: 60px;
+                    height: 60px;
+                    background: var(--bg-subtle);
+                    color: var(--accent);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .advantage-title { font-size: 1.25rem; font-weight: 800; color: var(--primary); }
+                .advantage-text { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.5; }
+
+                .process-grid {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 3rem;
+                    position: relative;
+                }
+
+                .process-item {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    text-align: center;
+                }
+
+                .step-number {
+                    font-size: 3rem;
+                    font-weight: 900;
+                    color: var(--border);
+                    line-height: 1;
+                    margin-bottom: 1.5rem;
+                }
+
+                .process-title { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 0.75rem; }
+                .process-text { color: var(--text-secondary); line-height: 1.6; }
+
+                .cta-box {
+                    text-align: center;
+                    padding: 4rem 2rem;
+                    background: #ffffff;
+                }
+
+                .cta-title { font-size: 2.5rem; font-weight: 800; color: var(--primary); margin-bottom: 1rem; }
+                .cta-text { font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 2.5rem; }
+
+                .cta-buttons {
+                    display: flex;
+                    gap: 1.5rem;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                }
+
+                @media (max-width: 768px) {
+                    .section-title { font-size: 1.75rem; }
+                    .mission-text { font-size: 1.35rem; }
+                    .process-grid { grid-template-columns: 1fr; gap: 2rem; }
+                    .cta-title { font-size: 1.75rem; }
+                }
+            `}</style>
         </div>
     );
 }

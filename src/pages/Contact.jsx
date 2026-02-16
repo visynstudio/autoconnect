@@ -16,105 +16,207 @@ export default function Contact() {
     };
 
     return (
-        <div style={{ backgroundColor: '#ffffff', color: '#1e293b' }}>
-
+        <div className="contact-page-wrapper">
             {/* 1. Header */}
-            <section style={{ backgroundColor: '#f8fafc', padding: '4rem 1rem', textAlign: 'center', borderBottom: '1px solid #e2e8f0' }}>
-                <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    <h1 style={{ fontSize: '3rem', fontWeight: '800', color: '#0f172a', marginBottom: '0.5rem', letterSpacing: '-1px' }}>
-                        Contact Us
-                    </h1>
-                    <p style={{ fontSize: '1.25rem', color: '#64748b', fontWeight: '500' }}>
-                        We're here to help. Reach out to our team.
-                    </p>
+            <header className="page-header section-bg">
+                <div className="container">
+                    <h1 className="page-title">Contact Our Team</h1>
+                    <p className="page-subtitle">Have questions? We're here to help you navigate India's most transparent vehicle marketplace.</p>
                 </div>
-            </section>
+            </header>
 
-            {/* 2. Contact Content */}
-            <section style={{ padding: '5rem 1rem' }}>
-                <div className="container" style={{ maxWidth: '1000px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem' }}>
+            {/* 2. Content */}
+            <section className="section">
+                <div className="container">
+                    <div className="contact-grid">
 
-                    {/* Left: Info */}
-                    <div>
-                        <h2 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '1.5rem', color: '#0f172a' }}>
-                            Get in Touch
-                        </h2>
-                        <p style={{ fontSize: '1.1rem', lineHeight: '1.7', color: '#475569', marginBottom: '2.5rem' }}>
-                            Have questions about buying, selling, or our platform policies?
-                            Our support team is available Mon-Fri, 9am - 6pm.
-                        </p>
+                        {/* Info Column */}
+                        <div className="contact-info-col">
+                            <h2 className="section-title">Get in Touch</h2>
+                            <p className="contact-intro">
+                                Our support team is available Mon-Fri, 9am - 6pm IST.
+                                Whether you're a buyer seeking help or a seller with listing queries, we're just a message away.
+                            </p>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                            <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                                <div style={{ padding: '0.75rem', backgroundColor: '#eff6ff', borderRadius: '0.5rem', color: '#2563eb' }}>
-                                    <Mail size={24} />
+                            <div className="info-cards-stack">
+                                <div className="info-card-item">
+                                    <div className="info-icon-box">
+                                        <Mail size={22} />
+                                    </div>
+                                    <div className="info-text">
+                                        <h3 className="info-label">Email Support</h3>
+                                        <a href="mailto:support@apnicar.com" className="info-value">support@apnicar.com</a>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 style={{ fontSize: '1.1rem', fontWeight: '600', marginBottom: '0.25rem', color: '#0f172a' }}>Email Us</h3>
-                                    <a href="mailto:support@automarket.com" style={{ color: '#64748b', fontSize: '1rem' }}>support@automarket.com</a>
-                                </div>
-                            </div>
 
-                            <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                                <div style={{ padding: '0.75rem', backgroundColor: '#eff6ff', borderRadius: '0.5rem', color: '#2563eb' }}>
-                                    <Phone size={24} />
+                                <div className="info-card-item">
+                                    <div className="info-icon-box">
+                                        <Phone size={22} />
+                                    </div>
+                                    <div className="info-text">
+                                        <h3 className="info-label">Phone Support</h3>
+                                        <p className="info-value">+91 8800 123 456</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 style={{ fontSize: '1.1rem', fontWeight: '600', marginBottom: '0.25rem', color: '#0f172a' }}>Call Us</h3>
-                                    <p style={{ color: '#64748b', fontSize: '1rem' }}>+91 8800 123 456</p>
-                                </div>
-                            </div>
 
-                            <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                                <div style={{ padding: '0.75rem', backgroundColor: '#eff6ff', borderRadius: '0.5rem', color: '#2563eb' }}>
-                                    <MapPin size={24} />
-                                </div>
-                                <div>
-                                    <h3 style={{ fontSize: '1.1rem', fontWeight: '600', marginBottom: '0.25rem', color: '#0f172a' }}>Visit Us</h3>
-                                    <p style={{ color: '#64748b', fontSize: '1rem', lineHeight: '1.5' }}>
-                                        123 Market Street, Tech Hub, <br /> Bangalore, India 560001
-                                    </p>
+                                <div className="info-card-item">
+                                    <div className="info-icon-box">
+                                        <MapPin size={22} />
+                                    </div>
+                                    <div className="info-text">
+                                        <h3 className="info-label">Headquarters</h3>
+                                        <p className="info-value">
+                                            Sector 44, Tech City, <br />
+                                            Gurugram, Haryana, 122003
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    {/* Right: Form */}
-                    <div style={{ backgroundColor: 'white', padding: '2.5rem', borderRadius: '1rem', border: '1px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)' }}>
-                        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', fontSize: '0.9rem', color: '#334155' }}>Your Name</label>
-                                <input type="text" required placeholder="John Doe" className="input-field" />
-                            </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', fontSize: '0.9rem', color: '#334155' }}>Email Address</label>
-                                <input type="email" required placeholder="john@example.com" className="input-field" />
-                            </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', fontSize: '0.9rem', color: '#334155' }}>Subject</label>
-                                <select className="input-field" required>
-                                    <option value="">Select a topic</option>
-                                    <option value="support">General Support</option>
-                                    <option value="billing">Billing & Fees</option>
-                                    <option value="safety">Trust & Safety</option>
-                                    <option value="feedback">Feedback</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', fontSize: '0.9rem', color: '#334155' }}>Message</label>
-                                <textarea required rows="4" placeholder="How can we help you?" className="input-field" style={{ resize: 'vertical' }}></textarea>
-                            </div>
-                            <button type="submit" className="btn btn-primary" disabled={submitting} style={{ justifyContent: 'center', marginTop: '0.5rem' }}>
-                                {submitting ? 'Sending...' : (
-                                    <>Send Message <Send size={18} /></>
-                                )}
-                            </button>
-                        </form>
-                    </div>
+                        {/* Form Column */}
+                        <div className="contact-form-col">
+                            <form onSubmit={handleSubmit} className="card contact-form animate-fade-in">
+                                <div className="form-field">
+                                    <label className="field-label">Full Name</label>
+                                    <input type="text" required placeholder="Ex: Rahul Sharma" className="input-field" />
+                                </div>
 
+                                <div className="form-field">
+                                    <label className="field-label">Email Address</label>
+                                    <input type="email" required placeholder="rahul@example.com" className="input-field" />
+                                </div>
+
+                                <div className="form-field">
+                                    <label className="field-label">Department</label>
+                                    <select className="input-field" required>
+                                        <option value="">Select Department</option>
+                                        <option value="support">General Support</option>
+                                        <option value="billing">Billing & Membership</option>
+                                        <option value="trust">Trust & Safety</option>
+                                        <option value="business">Business Inquiries</option>
+                                    </select>
+                                </div>
+
+                                <div className="form-field">
+                                    <label className="field-label">Your Message</label>
+                                    <textarea required rows="4" placeholder="How can we assist you today?" className="input-field" style={{ minHeight: '120px' }}></textarea>
+                                </div>
+
+                                <button type="submit" className="btn btn-primary" disabled={submitting} style={{ width: '100%', height: '54px' }}>
+                                    {submitting ? 'Sending Request...' : (
+                                        <>
+                                            <span>Send Message</span>
+                                            <Send size={18} />
+                                        </>
+                                    )}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </section>
 
+            <style>{`
+                .contact-page-wrapper {
+                    background-color: var(--bg-page);
+                }
+
+                .contact-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 5rem;
+                    align-items: start;
+                }
+
+                .section-title {
+                    font-size: 2.25rem;
+                    font-weight: 800;
+                    color: var(--primary);
+                    margin-bottom: 1.5rem;
+                }
+
+                .contact-intro {
+                    font-size: 1.1rem;
+                    line-height: 1.7;
+                    color: var(--text-secondary);
+                    margin-bottom: 3rem;
+                }
+
+                .info-cards-stack {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2rem;
+                }
+
+                .info-card-item {
+                    display: flex;
+                    gap: 1.25rem;
+                    align-items: flex-start;
+                }
+
+                .info-icon-box {
+                    width: 48px;
+                    height: 48px;
+                    background: var(--bg-subtle);
+                    color: var(--accent);
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                }
+
+                .info-label {
+                    font-size: 0.9rem;
+                    font-weight: 800;
+                    color: var(--primary);
+                    margin-bottom: 0.25rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                }
+
+                .info-value {
+                    font-size: 1.1rem;
+                    color: var(--text-secondary);
+                    text-decoration: none;
+                    line-height: 1.5;
+                }
+
+                a.info-value:hover {
+                    color: var(--accent);
+                }
+
+                .contact-form {
+                    padding: 3rem !important;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.5rem;
+                }
+
+                .form-field {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5rem;
+                }
+
+                .field-label {
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    color: var(--primary);
+                }
+
+                @media (max-width: 1024px) {
+                    .contact-grid { gap: 3rem; }
+                    .contact-form { padding: 2rem !important; }
+                }
+
+                @media (max-width: 768px) {
+                    .contact-grid { grid-template-columns: 1fr; gap: 4rem; }
+                    .section-title { font-size: 1.75rem; text-align: center; }
+                    .contact-intro { text-align: center; }
+                }
+            `}</style>
         </div>
     );
 }

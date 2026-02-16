@@ -153,227 +153,219 @@ export default function AddVehicle() {
     if (loading) return <div className="container" style={{ padding: '4rem', textAlign: 'center' }}>Processing...</div>;
 
     return (
-        <div className="add-vehicle-page">
-            <div className="container" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
-                <div className="header-section">
-                    <button onClick={() => navigate(-1)} className="back-btn"><X size={20} /> Cancel</button>
-                    <h1 className="page-title">Sell Your Vehicle</h1>
-                </div>
-
-                <form onSubmit={handleSubmit} className="form-card">
-                    <div className="form-grid">
-                        <div className="form-group">
-                            <label>Vehicle Type *</label>
-                            <select name="vehicle_type" value={formData.vehicle_type} onChange={handleChange} required className="input-field">
-                                <option value="" disabled>Select Category</option>
-                                <option value="car">Car</option>
-                                <option value="bike">Bike</option>
-                                <option value="cycle">Cycle</option>
-                                <option value="truck">Truck</option>
-                                <option value="tractor">Tractor</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-
-                        <div className="form-group">
-                            <label>Brand *</label>
-                            <input type="text" name="brand" placeholder="e.g. Maruti, Honda" required className="input-field" onChange={handleChange} />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Model *</label>
-                            <input type="text" name="model" placeholder="e.g. Swift, City" required className="input-field" onChange={handleChange} />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Year *</label>
-                            <input type="number" name="year" min="1990" max={new Date().getFullYear() + 1} defaultValue={new Date().getFullYear()} required className="input-field" onChange={handleChange} />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Distance Driven (km) *</label>
-                            <input type="number" name="km_driven" placeholder="e.g. 50000" required className="input-field" onChange={handleChange} />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Fuel Type *</label>
-                            <select name="fuel_type" className="input-field" value={formData.fuel_type} onChange={handleChange}>
-                                <option value="petrol">Petrol</option>
-                                <option value="diesel">Diesel</option>
-                                <option value="electric">Electric</option>
-                                <option value="cng">CNG</option>
-                                <option value="hybrid">Hybrid</option>
-                            </select>
-                        </div>
-
-                        <div className="form-group">
-                            <label>Price (₹) *</label>
-                            <input type="number" name="price" placeholder="e.g. 500000" required className="input-field" onChange={handleChange} />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Location *</label>
-                            <input type="text" name="location" placeholder="e.g. Mumbai, Maharashtra" required className="input-field" onChange={handleChange} />
-                        </div>
-                    </div>
-
-                    <div className="form-group full-width" style={{ marginTop: '1.5rem' }}>
-                        <label>Description</label>
-                        <textarea
-                            name="description"
-                            rows="4"
-                            className="input-field"
-                            placeholder="Describe the condition, features, history, or any modifications..."
-                            onChange={handleChange}
-                        ></textarea>
-                    </div>
-
-                    <div className="upload-section">
-                        <label>Photos (Min 2, Max 5) *</label>
-                        <div
-                            className="upload-box"
-                            onClick={() => document.getElementById('file-upload').click()}
-                        >
-                            <Upload size={32} className="upload-icon" />
-                            <p className="upload-text">Click to upload vehicle images</p>
-                            <p className="upload-subtext">Supported formats: JPG, PNG</p>
-                            <input id="file-upload" type="file" multiple accept="image/*" className="hidden-input" onChange={handleImageChange} />
-                        </div>
-
-                        {previews.length > 0 && (
-                            <div className="preview-grid">
-                                {previews.map((src, i) => (
-                                    <div key={i} className="preview-card">
-                                        <img src={src} alt="Preview" />
-                                        <button type="button" onClick={() => removeImage(i)} className="remove-btn">
-                                            <X size={14} />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="form-actions">
-                        <button type="submit" className="submit-btn" disabled={loading}>
-                            {loading ? 'Publishing Listing...' : 'List Vehicle Now'}
+        <div className="add-vehicle-wrapper">
+            <header className="page-header section-bg">
+                <div className="container">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                        <button onClick={() => navigate(-1)} className="back-link-v2">
+                            <X size={20} /> Cancel
                         </button>
                     </div>
-                </form>
+                    <h1 className="page-title">List Your Vehicle</h1>
+                    <p className="page-subtitle">Fill in the details to reach thousands of potential buyers</p>
+                </div>
+            </header>
+
+            <div className="container section">
+                <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                    <form onSubmit={handleSubmit} className="card animate-fade-in" style={{ padding: '3rem' }}>
+                        <div className="form-grid-v2">
+                            <div className="form-group-v2">
+                                <label className="field-label">Vehicle Type *</label>
+                                <select name="vehicle_type" value={formData.vehicle_type} onChange={handleChange} required className="input-field">
+                                    <option value="" disabled>Select Category</option>
+                                    <option value="car">Car</option>
+                                    <option value="bike">Bike</option>
+                                    <option value="cycle">Cycle</option>
+                                    <option value="truck">Truck</option>
+                                    <option value="tractor">Tractor</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div className="form-group-v2">
+                                <label className="field-label">Brand *</label>
+                                <input type="text" name="brand" placeholder="e.g. Maruti, Honda" required className="input-field" onChange={handleChange} />
+                            </div>
+
+                            <div className="form-group-v2">
+                                <label className="field-label">Model *</label>
+                                <input type="text" name="model" placeholder="e.g. Swift, City" required className="input-field" onChange={handleChange} />
+                            </div>
+
+                            <div className="form-group-v2">
+                                <label className="field-label">Manufacturing Year *</label>
+                                <input type="number" name="year" min="1990" max={new Date().getFullYear() + 1} defaultValue={new Date().getFullYear()} required className="input-field" onChange={handleChange} />
+                            </div>
+
+                            <div className="form-group-v2">
+                                <label className="field-label">KM Driven *</label>
+                                <input type="number" name="km_driven" placeholder="e.g. 45000" required className="input-field" onChange={handleChange} />
+                            </div>
+
+                            <div className="form-group-v2">
+                                <label className="field-label">Fuel Type *</label>
+                                <select name="fuel_type" className="input-field" value={formData.fuel_type} onChange={handleChange}>
+                                    <option value="petrol">Petrol</option>
+                                    <option value="diesel">Diesel</option>
+                                    <option value="electric">Electric</option>
+                                    <option value="cng">CNG</option>
+                                    <option value="hybrid">Hybrid</option>
+                                </select>
+                            </div>
+
+                            <div className="form-group-v2">
+                                <label className="field-label">Asking Price (₹) *</label>
+                                <input type="number" name="price" placeholder="e.g. 5,50,000" required className="input-field" onChange={handleChange} />
+                            </div>
+
+                            <div className="form-group-v2">
+                                <label className="field-label">Current Location *</label>
+                                <input type="text" name="location" placeholder="e.g. Mumbai, Maharashtra" required className="input-field" onChange={handleChange} />
+                            </div>
+                        </div>
+
+                        <div className="form-group-v2" style={{ marginTop: '2rem' }}>
+                            <label className="field-label">Detailed Description</label>
+                            <textarea
+                                name="description"
+                                rows="5"
+                                className="input-field"
+                                style={{ height: 'auto' }}
+                                placeholder="Share details about the vehicle's condition, service history, and extra features..."
+                                onChange={handleChange}
+                            ></textarea>
+                        </div>
+
+                        <div className="upload-container-v2" style={{ marginTop: '2.5rem' }}>
+                            <label className="field-label">Vehicle Photographs (2-5 Photos) *</label>
+                            <div
+                                className="dropzone-v2"
+                                onClick={() => document.getElementById('file-upload').click()}
+                            >
+                                <Upload size={32} strokeWidth={1.5} color="var(--accent)" />
+                                <div style={{ marginTop: '1rem' }}>
+                                    <p style={{ fontWeight: 700, margin: 0 }}>Click to upload images</p>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Supported: JPG, PNG, WEBP</p>
+                                </div>
+                                <input id="file-upload" type="file" multiple accept="image/*" className="hidden-input" onChange={handleImageChange} />
+                            </div>
+
+                            {previews.length > 0 && (
+                                <div className="previews-strip">
+                                    {previews.map((src, i) => (
+                                        <div key={i} className="preview-thumb">
+                                            <img src={src} alt="Thumbnail" />
+                                            <button type="button" onClick={() => removeImage(i)} className="delete-thumb">
+                                                <X size={14} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        <div style={{ marginTop: '3rem' }}>
+                            <button type="submit" className="btn btn-primary" style={{ width: '100%', height: '56px', fontSize: '1.05rem' }} disabled={loading}>
+                                {loading ? 'Processing Submission...' : 'Publish Listing Now'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <style>{`
-                .add-vehicle-page {
-                    background-color: #f8fafc;
+                .add-vehicle-wrapper {
+                    background-color: var(--bg-subtle);
                     min-height: 100vh;
-                    padding-bottom: 4rem;
+                    padding-bottom: 5rem;
                 }
-                
-                .header-section {
+
+                .back-link-v2 {
                     display: flex;
                     align-items: center;
-                    justify-content: space-between;
-                    margin-bottom: 2rem;
+                    gap: 0.5rem;
+                    background: #fee2e2;
+                    color: #dc2626;
+                    border: none;
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    font-weight: 700;
+                    font-size: 0.85rem;
+                    cursor: pointer;
+                    transition: all 0.2s;
                 }
-                .page-title { font-size: 1.75rem; font-weight: 800; color: #0f172a; margin: 0; }
-                .back-btn {
-                    display: flex; align-items: center; gap: 0.5rem;
-                    background: none; border: none; color: #64748b; font-weight: 600; cursor: pointer;
-                    padding: 0.5rem 0;
-                }
-                .back-btn:hover { color: #0f172a; }
+                .back-link-v2:hover { background: #fecaca; }
 
-                .form-card {
-                    background: white;
-                    border: 1px solid #e2e8f0;
-                    border-radius: 1rem;
-                    padding: 2.5rem;
-                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-                }
-
-                .form-grid {
+                .form-grid-v2 {
                     display: grid;
                     grid-template-columns: 1fr 1fr;
                     gap: 1.5rem;
                 }
 
-                .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
-                .form-group label { font-size: 0.9rem; font-weight: 600; color: #334155; }
-                
-                .input-field {
-                    padding: 0.75rem 1rem;
-                    border: 1px solid #cbd5e1;
-                    border-radius: 0.5rem;
-                    font-size: 1rem;
-                    color: #0f172a;
-                    transition: border-color 0.2s, box-shadow 0.2s;
+                .form-group-v2 { display: flex; flex-direction: column; gap: 0.5rem; }
+                .field-label {
+                    font-size: 0.75rem;
+                    font-weight: 800;
+                    color: var(--text-secondary);
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
                 }
-                .input-field:focus {
-                    outline: none;
-                    border-color: #3b82f6;
-                    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-                }
-                textarea.input-field { resize: vertical; min-height: 100px; }
 
-                .upload-section { margin-top: 2rem; }
-                .upload-box {
-                    border: 2px dashed #cbd5e1;
-                    border-radius: 1rem;
-                    padding: 3rem 1rem;
+                .dropzone-v2 {
+                    border: 2px dashed var(--border);
+                    border-radius: 12px;
+                    padding: 3rem 1.5rem;
                     text-align: center;
+                    background: var(--bg-page);
                     cursor: pointer;
-                    background: #f8fafc;
                     transition: all 0.2s;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
                 }
-                .upload-box:hover {
-                    background: #eff6ff;
-                    border-color: #3b82f6;
+                .dropzone-v2:hover {
+                    border-color: var(--accent);
+                    background: #f0f7ff;
                 }
-                .upload-icon { color: #64748b; margin-bottom: 1rem; }
-                .upload-text { font-weight: 600; color: #0f172a; margin-bottom: 0.25rem; }
-                .upload-subtext { font-size: 0.85rem; color: #64748b; }
+
+                .previews-strip {
+                    display: flex;
+                    gap: 1rem;
+                    margin-top: 1.5rem;
+                    flex-wrap: wrap;
+                }
+                .preview-thumb {
+                    position: relative;
+                    width: 100px;
+                    height: 100px;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    border: 1px solid var(--border);
+                }
+                .preview-thumb img { width: 100%; height: 100%; object-fit: cover; }
+                .delete-thumb {
+                    position: absolute;
+                    top: 4px;
+                    right: 4px;
+                    width: 24px;
+                    height: 24px;
+                    border-radius: 50%;
+                    background: #ef4444;
+                    color: white;
+                    border: none;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                }
+
                 .hidden-input { display: none; }
 
-                .preview-grid {
-                    display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;
-                }
-                .preview-card {
-                    position: relative; width: 100px; height: 100px; flex-shrink: 0;
-                }
-                .preview-card img {
-                    width: 100%; height: 100%; object-fit: cover; border-radius: 0.5rem;
-                    border: 1px solid #e2e8f0;
-                }
-                .remove-btn {
-                    position: absolute; top: -8px; right: -8px;
-                    width: 24px; height: 24px; border-radius: 50%;
-                    background: #ef4444; color: white; border: 2px solid white;
-                    display: flex; align-items: center; justify-content: center;
-                    cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                }
-
-                .form-actions { margin-top: 2.5rem; }
-                .submit-btn {
-                    width: 100%;
-                    background: #2563eb;
-                    color: white;
-                    padding: 1rem;
-                    border-radius: 0.75rem;
-                    font-size: 1.1rem;
-                    font-weight: 700;
-                    border: none;
-                    cursor: pointer;
-                    transition: background 0.2s;
-                }
-                .submit-btn:hover { background: #1d4ed8; }
-                .submit-btn:disabled { background: #94a3b8; cursor: not-allowed; }
-
-                /* Responsive */
-                @media (max-width: 768px) {
-                    .container { padding: 1.5rem 1rem; }
-                    .form-card { padding: 1.5rem; }
-                    .form-grid { grid-template-columns: 1fr; gap: 1rem; }
-                    .page-title { font-size: 1.5rem; }
+                @media (max-width: 640px) {
+                    .form-grid-v2 { grid-template-columns: 1fr; gap: 1rem; }
+                    .card { padding: 1.5rem !important; }
                 }
             `}</style>
         </div>

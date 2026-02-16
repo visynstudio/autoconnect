@@ -1,106 +1,203 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Instagram, Linkedin, MapPin, Mail, Phone, ChevronRight } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin, MapPin, Mail, Phone, ArrowUpRight } from 'lucide-react';
 import Logo from './Logo';
 
 export default function Footer() {
+    const currentYear = new Date().getFullYear();
+
     return (
-        <footer style={{ backgroundColor: '#0f172a', color: '#f8fafc', padding: '5rem 0 2rem', marginTop: 'auto' }}>
-            <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '4rem', marginBottom: '4rem' }}>
-
-                <div>
-                    <div style={{ marginBottom: '1.5rem', opacity: 0.9 }}>
-                        <Logo variant="dark" />
+        <footer className="footer-luxury">
+            <div className="container">
+                <div className="footer-grid">
+                    {/* Brand Info */}
+                    <div className="footer-brand">
+                        <Logo variant="dark" className="footer-logo" />
+                        <p className="footer-tagline">Apni Car, Apni Choice</p>
+                        <p className="footer-desc">
+                            Direct buyer-seller connections. No agents, no commission.
+                            The most trusted vehicle marketplace in India.
+                        </p>
+                        <div className="social-links">
+                            {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
+                                <a key={i} href="#" className="social-icon">
+                                    <Icon size={18} />
+                                </a>
+                            ))}
+                        </div>
                     </div>
-                    <p style={{ color: '#94a3b8', lineHeight: '1.7', marginBottom: '2rem', maxWidth: '300px' }}>
-                        The most trusted marketplace for buying and selling second-hand vehicles directly. No middlemen, just genuine deals.
-                    </p>
-                    <div style={{ display: 'flex', gap: '1rem' }}>
-                        {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
-                            <a key={i} href="#" style={{
-                                width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                background: 'rgba(255,255,255,0.05)', borderRadius: '50%', color: '#94a3b8', transition: 'all 0.2s'
-                            }}>
-                                <Icon size={18} />
-                            </a>
-                        ))}
+
+                    {/* Navigation */}
+                    <div className="footer-nav-col">
+                        <h4 className="footer-title">Marketplace</h4>
+                        <Link to="/browse">Browse Vehicles</Link>
+                        <Link to="/browse?type=car">Buy Cars</Link>
+                        <Link to="/browse?type=bike">Buy Bikes</Link>
+                        <Link to="/seller-signup">Start Selling</Link>
                     </div>
-                </div>
 
-                {/* 2. Explore Links */}
-                <div>
-                    <h4 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '1.5rem', color: 'white' }}>Explore</h4>
-                    <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                        {[
-                            { label: 'Browse All Vehicles', path: '/browse' },
-                            { label: 'Cars for Sale', path: '/browse?type=car' },
-                            { label: 'Bikes for Sale', path: '/browse?type=bike' },
-                            { label: 'Commercial Vehicles', path: '/browse?type=truck' },
-                            { label: 'Sell Your Vehicle', path: '/seller-signup' },
-                        ].map((link, i) => (
-                            <li key={i}>
-                                <Link to={link.path} style={{ color: '#94a3b8', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'color 0.2s' }}
-                                    onMouseOver={(e) => e.currentTarget.style.color = '#3b82f6'}
-                                    onMouseOut={(e) => e.currentTarget.style.color = '#94a3b8'}
-                                >
-                                    <ChevronRight size={14} color="#64748b" /> {link.label}
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                    <div className="footer-nav-col">
+                        <h4 className="footer-title">Company</h4>
+                        <Link to="/about">About Us</Link>
+                        <Link to="/careers">Careers</Link>
+                        <Link to="/terms">Terms of Service</Link>
+                        <Link to="/privacy">Privacy Policy</Link>
+                    </div>
 
-                {/* 3. Company & Legal */}
-                <div>
-                    <h4 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '1.5rem', color: 'white' }}>Company</h4>
-                    <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                        {[
-                            { label: 'About Us', path: '/about' },
-                            { label: 'Careers', path: '/careers' },
-                            { label: 'Terms of Service', path: '/terms' },
-                            { label: 'Privacy Policy', path: '/privacy' },
-                            { label: 'Contact Us', path: '/contact' },
-                        ].map((link, i) => (
-                            <li key={i}>
-                                <Link to={link.path} style={{ color: '#94a3b8', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'color 0.2s' }}
-                                    onMouseOver={(e) => e.currentTarget.style.color = '#3b82f6'}
-                                    onMouseOut={(e) => e.currentTarget.style.color = '#94a3b8'}
-                                >
-                                    {link.label}
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-
-                {/* 4. Contact Info */}
-                <div>
-                    <h4 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: '1.5rem', color: 'white' }}>Contact Support</h4>
-                    <ul style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                        <li style={{ display: 'flex', gap: '1rem', color: '#94a3b8' }}>
-                            <MapPin size={20} color="#3b82f6" style={{ minWidth: '20px' }} />
-                            <span>123 Market Street, Tech Hub, <br /> Bangalore, India 560001</span>
-                        </li>
-                        <li style={{ display: 'flex', gap: '1rem', color: '#94a3b8' }}>
-                            <Mail size={20} color="#3b82f6" />
-                            <a href="mailto:support@automarket.com" style={{ color: 'inherit', textDecoration: 'none' }}>support@automarket.com</a>
-                        </li>
-                        <li style={{ display: 'flex', gap: '1rem', color: '#94a3b8' }}>
-                            <Phone size={20} color="#3b82f6" />
+                    {/* Contact */}
+                    <div className="footer-nav-col">
+                        <h4 className="footer-title">Support</h4>
+                        <div className="contact-item">
+                            <Mail size={16} />
+                            <span>support@apnicar.com</span>
+                        </div>
+                        <div className="contact-item">
+                            <Phone size={16} />
                             <span>+91 8800 123 456</span>
-                        </li>
-                    </ul>
+                        </div>
+                        <div className="contact-item">
+                            <MapPin size={16} />
+                            <span>New Delhi, India</span>
+                        </div>
+                    </div>
                 </div>
 
+                <div className="footer-bottom">
+                    <p>&copy; {currentYear} ApniCar India. All rights reserved.</p>
+                    <div className="footer-bottom-links">
+                        <a href="#top" className="back-to-top">
+                            <span>Back to top</span>
+                            <ArrowUpRight size={14} />
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            {/* Bottom Bar */}
-            <div className="container" style={{ borderTop: '1px solid #1e293b', paddingTop: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: '#64748b', fontSize: '0.9rem' }}>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', justifyContent: 'center' }}>
-                    <p>&copy; {new Date().getFullYear()} AutoMarket Platform. All rights reserved.</p>
-                </div>
-                <p style={{ opacity: 0.6 }}>Designed for simplified vehicle trading.</p>
-            </div>
+            <style>{`
+                .footer-luxury {
+                    background: #0F172A;
+                    color: white;
+                    padding: 8rem 0 3rem;
+                    margin-top: auto;
+                }
+
+                .footer-grid {
+                    display: grid;
+                    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+                    gap: 4rem;
+                    margin-bottom: 6rem;
+                }
+
+                .footer-logo { height: 40px !important; margin-bottom: 0.5rem; }
+
+                .footer-tagline {
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    color: var(--accent);
+                    text-transform: uppercase;
+                    letter-spacing: 0.1em;
+                    margin-bottom: 1.5rem;
+                }
+
+                .footer-desc {
+                    color: #94A3B8;
+                    font-size: 0.95rem;
+                    line-height: 1.7;
+                    margin-bottom: 2rem;
+                    max-width: 320px;
+                }
+
+                .social-links {
+                    display: flex;
+                    gap: 1rem;
+                }
+
+                .social-icon {
+                    width: 40px;
+                    height: 40px;
+                    background: rgba(255,255,255,0.05);
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #94A3B8;
+                    transition: all 0.3s;
+                    text-decoration: none;
+                }
+
+                .social-icon:hover {
+                    background: var(--accent);
+                    color: white;
+                    transform: translateY(-3px);
+                }
+
+                .footer-title {
+                    font-size: 1.1rem;
+                    font-weight: 700;
+                    margin-bottom: 2rem;
+                    color: white;
+                }
+
+                .footer-nav-col {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.25rem;
+                }
+
+                .footer-nav-col a {
+                    color: #94A3B8;
+                    text-decoration: none;
+                    font-weight: 500;
+                    font-size: 0.95rem;
+                    transition: color 0.2s;
+                }
+
+                .footer-nav-col a:hover {
+                    color: white;
+                }
+
+                .contact-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                    color: #94A3B8;
+                    font-size: 0.95rem;
+                }
+
+                .footer-bottom {
+                    border-top: 1px solid rgba(255,255,255,0.05);
+                    padding-top: 2rem;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    color: #64748B;
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                }
+
+                .back-to-top {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    color: #94A3B8;
+                    text-decoration: none;
+                    transition: color 0.2s;
+                }
+
+                .back-to-top:hover { color: white; }
+
+                @media (max-width: 991px) {
+                    .footer-grid {
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 3rem;
+                    }
+                }
+
+                @media (max-width: 576px) {
+                    .footer-luxury { padding-top: 5rem; }
+                    .footer-grid { grid-template-columns: 1fr; gap: 3rem; }
+                    .footer-bottom { flex-direction: column; gap: 1.5rem; text-align: center; }
+                }
+            `}</style>
         </footer>
     );
 }

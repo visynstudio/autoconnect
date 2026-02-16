@@ -30,26 +30,60 @@ export default function SellerLogin() {
     };
 
     return (
-        <div className="container" style={{ maxWidth: '500px', marginTop: '6rem', padding: '2rem' }}>
-            <h1 className="page-title" style={{ textAlign: 'center', marginBottom: '1.5rem' }}>Seller Login</h1>
-            <form onSubmit={handleLogin} className="card" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Email Address</label>
-                    <input type="email" name="email" placeholder="john@example.com" required className="input-field" onChange={handleChange} />
+        <div className="login-page-wrapper">
+            <header className="page-header section-bg">
+                <div className="container">
+                    <h1 className="page-title">Welcome Back</h1>
+                    <p className="page-subtitle">Access your seller dashboard to manage listings</p>
                 </div>
-                <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Password</label>
-                    <input type="password" name="password" placeholder="••••••••" required className="input-field" onChange={handleChange} />
-                </div>
+            </header>
 
-                <button type="submit" className="btn btn-primary" disabled={loading} style={{ marginTop: '1rem', padding: '1rem' }}>
-                    {loading ? 'Logging in...' : 'Acccess Dashboard'}
-                </button>
+            <div className="container" style={{ maxWidth: '480px', padding: '4rem 1.5rem' }}>
+                <form onSubmit={handleLogin} className="card animate-fade-in" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '700', fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            Email Address
+                        </label>
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="your@email.com"
+                            required
+                            className="input-field"
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '700', fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="••••••••"
+                            required
+                            className="input-field"
+                            onChange={handleChange}
+                        />
+                    </div>
 
-                <p style={{ textAlign: 'center', marginTop: '1.5rem', color: 'var(--text-muted)' }}>
-                    Don't have an account? <Link to="/seller-signup" style={{ color: 'var(--primary)', fontWeight: '600' }}>Sign Up</Link>
-                </p>
-            </form>
-        </div>
+                    <button type="submit" className="btn btn-primary" disabled={loading} style={{ marginTop: '0.5rem', width: '100%' }}>
+                        {loading ? 'Authenticating...' : 'Sign In to Dashboard'}
+                    </button>
+
+                    <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>
+                        New to ApniCar? <Link to="/seller-signup" style={{ color: 'var(--accent)', fontWeight: '700' }}>Create an account</Link>
+                    </p>
+                </form>
+            </div>
+
+            <style>{`
+                .login-page-wrapper {
+                    min-height: 100vh;
+                    background: var(--bg-subtle);
+                    padding-bottom: 5rem;
+                }
+            `}</style>
+        </div >
     );
 }

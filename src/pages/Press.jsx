@@ -3,127 +3,101 @@ import { Newspaper, Download, Mail, MapPin, Info, Image, FileText } from 'lucide
 
 export default function Press() {
     return (
-        <div style={{ backgroundColor: '#ffffff', color: '#1e293b' }}>
-
+        <div className="press-page-wrapper">
             {/* 1. Page Header */}
-            <section style={{ backgroundColor: '#f8fafc', padding: '5rem 1rem', textAlign: 'center', borderBottom: '1px solid #e2e8f0' }}>
-                <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    <h1 style={{ fontSize: '3rem', fontWeight: '800', color: '#0f172a', marginBottom: '1rem', letterSpacing: '-1px' }}>
-                        Press & Media
-                    </h1>
-                    <p style={{ fontSize: '1.25rem', color: '#64748b', fontWeight: '500' }}>
-                        Official updates, brand assets, and media resources.
-                    </p>
+            <header className="page-header section-bg">
+                <div className="container">
+                    <h1 className="page-title">Press & Media</h1>
+                    <p className="page-subtitle">Resources, brand assets, and official updates from the ApniCar newsroom.</p>
                 </div>
-            </section>
+            </header>
 
             {/* 2. About the Platform */}
-            <section style={{ padding: '5rem 1rem' }}>
-                <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    <div style={{ padding: '0 0 2rem', borderBottom: '1px solid #e2e8f0' }}>
-                        <h2 style={{ fontSize: '1.75rem', fontWeight: '700', marginBottom: '1.5rem', color: '#0f172a' }}>
-                            About AutoMarket
-                        </h2>
-                        <p style={{ fontSize: '1.125rem', lineHeight: '1.8', color: '#475569', marginBottom: '1.5rem' }}>
-                            AutoMarket is a direct-to-consumer marketplace designed to simplify the buying and selling of second-hand vehicles.
-                            By removing intermediaries, agents, and hidden fees, we ensure that value stays where it belongs—with the buyers and sellers.
+            <section className="section">
+                <div className="container">
+                    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                        <h2 className="section-title">About ApniCar</h2>
+                        <p className="section-desc" style={{ textAlign: 'left', margin: '0 0 1.5rem', fontSize: '1.1rem' }}>
+                            ApniCar is India's premier direct-to-consumer vehicle marketplace.
+                            Our platform empowers vehicle owners and buyers to connect without the friction of middlemen,
+                            ensuring transparency and maximum value for both parties.
                         </p>
-                        <p style={{ fontSize: '1.125rem', lineHeight: '1.8', color: '#475569' }}>
-                            Our platform prioritizes <strong>transparency</strong>, <strong>verified listings</strong>, and <strong>direct communication</strong>.
+                        <p className="section-desc" style={{ textAlign: 'left', margin: 0, fontSize: '1.1rem' }}>
+                            Launched with a vision to digitize the traditional pre-owned vehicle market,
+                            ApniCar focuses on verified listings, secure direct communication, and a seamless user experience.
                         </p>
                     </div>
                 </div>
             </section>
 
-            {/* 3. Media Coverage (Empty State) */}
-            <section style={{ padding: '0 1rem 5rem' }}>
-                <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    <h2 style={{ fontSize: '1.75rem', fontWeight: '700', marginBottom: '1.5rem', color: '#0f172a' }}>
-                        Media Coverage
-                    </h2>
-                    <div style={{
-                        backgroundColor: '#f8fafc',
-                        border: '1px dashed #cbd5e1',
-                        borderRadius: '0.75rem',
-                        padding: '3rem',
-                        textAlign: 'center'
-                    }}>
-                        <Newspaper size={40} color="#94a3b8" style={{ marginBottom: '1rem' }} />
-                        <p style={{ color: '#64748b', fontSize: '1rem', fontStyle: 'italic' }}>
-                            We are just getting started. Press mentions and feature stories will appear here soon.
-                        </p>
+            {/* 3. Media Coverage */}
+            <section className="section section-bg">
+                <div className="container">
+                    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                        <h2 className="section-title" style={{ marginBottom: '2.5rem' }}>Media Mentions</h2>
+                        <div className="empty-press-card card">
+                            <Newspaper size={48} strokeWidth={1} />
+                            <p>We're making headlines. Recent press features and news updates will appear here.</p>
+                        </div>
                     </div>
                 </div>
             </section>
 
             {/* 4. Press Resources */}
-            <section style={{ padding: '0 1rem 5rem' }}>
-                <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    <h2 style={{ fontSize: '1.75rem', fontWeight: '700', marginBottom: '2rem', color: '#0f172a' }}>
-                        Brand Assets & Resources
-                    </h2>
-                    <div style={{ display: 'grid', gap: '1rem' }}>
-                        {[
-                            { icon: Image, title: 'Official Logo Pack', desc: 'High-res vector and PNG logos.', size: '2.4 MB' },
-                            { icon: FileText, title: 'Brand Guidelines', desc: 'Usage rules for our brand identity.', size: '1.1 MB' },
-                            { icon: Info, title: 'Fact Sheet', desc: 'Key statistics and company history.', size: '0.5 MB' },
-                        ].map((item, i) => (
-                            <div key={i} style={{
-                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                padding: '1.25rem 1.5rem', backgroundColor: 'white',
-                                border: '1px solid #e2e8f0', borderRadius: '0.75rem',
-                                transition: 'border-color 0.2s'
-                            }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                    <div style={{ color: '#3b82f6' }}><item.icon size={24} /></div>
-                                    <div>
-                                        <h3 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#1e293b' }}>{item.title}</h3>
-                                        <p style={{ fontSize: '0.9rem', color: '#64748b' }}>{item.desc}</p>
+            <section className="section">
+                <div className="container">
+                    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                        <h2 className="section-title" style={{ marginBottom: '2.5rem' }}>Media Kit & Assets</h2>
+                        <div className="resources-stack">
+                            {[
+                                { icon: Image, title: 'Official Logo Pack', desc: 'Vector and high-resolution PNG assets.', size: '2.4 MB' },
+                                { icon: FileText, title: 'Brand Guidelines', desc: 'Detailed rules for our visual identity.', size: '1.1 MB' },
+                                { icon: Info, title: 'Company Fact Sheet', desc: 'Key stats, roadmap, and leadership info.', size: '0.8 MB' },
+                            ].map((item, i) => (
+                                <div key={i} className="resource-card card">
+                                    <div className="resource-meta">
+                                        <div className="resource-icon">
+                                            <item.icon size={22} />
+                                        </div>
+                                        <div className="resource-info">
+                                            <h3 className="resource-title">{item.title}</h3>
+                                            <p className="resource-text">{item.desc}</p>
+                                        </div>
                                     </div>
+                                    <button className="btn btn-outline resource-btn">
+                                        Download <span className="file-size">{item.size}</span>
+                                    </button>
                                 </div>
-                                <button className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.85rem' }}>
-                                    Download <span style={{ marginLeft: '0.5rem', color: '#94a3b8' }}>({item.size})</span>
-                                </button>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>
 
             {/* 5. Media Contact */}
-            <section style={{ backgroundColor: '#f1f5f9', padding: '5rem 1rem' }}>
-                <div className="container" style={{ maxWidth: '600px', margin: '0 auto' }}>
-                    <div style={{
-                        backgroundColor: '#ffffff',
-                        padding: '2.5rem',
-                        borderRadius: '1rem',
-                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
-                        textAlign: 'center'
-                    }}>
-                        <h2 style={{ fontSize: '1.75rem', fontWeight: '700', marginBottom: '2rem', color: '#0f172a' }}>
-                            Media Contact
-                        </h2>
+            <section className="section section-bg">
+                <div className="container">
+                    <div className="media-contact-box card">
+                        <h2 className="section-title">Media Inquiries</h2>
+                        <p className="section-desc" style={{ marginBottom: '3rem' }}>For interview requests or general media questions, reach out to our press office.</p>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'center' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <div style={{ padding: '0.75rem', backgroundColor: '#eff6ff', borderRadius: '50%', color: '#2563eb' }}>
-                                    <Mail size={24} />
+                        <div className="contact-info-grid">
+                            <div className="contact-info-item">
+                                <div className="info-icon">
+                                    <Mail size={22} />
                                 </div>
-                                <div style={{ textAlign: 'left' }}>
-                                    <p style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: '600', textTransform: 'uppercase' }}>Press Inquiries</p>
-                                    <a href="mailto:press@automarket.com" style={{ fontSize: '1.1rem', color: '#0f172a', fontWeight: '600' }}>press@automarket.com</a>
+                                <div className="item-text">
+                                    <span className="item-label">Email Address</span>
+                                    <a href="mailto:press@apnicar.com" className="item-value">press@apnicar.com</a>
                                 </div>
                             </div>
-
-                            <div style={{ width: '100%', height: '1px', backgroundColor: '#f1f5f9' }}></div>
-
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <div style={{ padding: '0.75rem', backgroundColor: '#eff6ff', borderRadius: '50%', color: '#2563eb' }}>
-                                    <MapPin size={24} />
+                            <div className="contact-info-item">
+                                <div className="info-icon">
+                                    <MapPin size={22} />
                                 </div>
-                                <div style={{ textAlign: 'left' }}>
-                                    <p style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: '600', textTransform: 'uppercase' }}>H.Q. Location</p>
-                                    <p style={{ fontSize: '1.1rem', color: '#0f172a', fontWeight: '500' }}>Bangalore, India</p>
+                                <div className="item-text">
+                                    <span className="item-label">Global H.Q.</span>
+                                    <p className="item-value">Gurugram, India</p>
                                 </div>
                             </div>
                         </div>
@@ -131,6 +105,117 @@ export default function Press() {
                 </div>
             </section>
 
+            <style>{`
+                .press-page-wrapper {
+                    background-color: var(--bg-page);
+                }
+
+                .section-title {
+                    font-size: 2rem;
+                    font-weight: 800;
+                    color: var(--primary);
+                    margin-bottom: 1.5rem;
+                }
+
+                .section-desc {
+                    font-size: 1.1rem;
+                    color: var(--text-secondary);
+                    line-height: 1.7;
+                    margin: 0 auto;
+                }
+
+                .empty-press-card {
+                    text-align: center;
+                    padding: 4rem 2rem !important;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1.5rem;
+                    color: var(--text-muted);
+                    font-style: italic;
+                    border: 2px dashed var(--border);
+                    background: transparent;
+                }
+
+                .resources-stack {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                .resource-card {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 1.25rem 1.5rem !important;
+                }
+
+                .resource-meta {
+                    display: flex;
+                    gap: 1.25rem;
+                    align-items: center;
+                }
+
+                .resource-icon {
+                    width: 44px;
+                    height: 44px;
+                    background: var(--bg-subtle);
+                    color: var(--accent);
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                }
+
+                .resource-title { font-size: 1.1rem; font-weight: 800; color: var(--primary); margin-bottom: 0.15rem; }
+                .resource-text { font-size: 0.9rem; color: var(--text-secondary); }
+
+                .resource-btn { height: 40px; font-size: 0.85rem; padding: 0 1rem; border-radius: 8px; }
+                .file-size { color: var(--text-muted); margin-left: 0.5rem; font-weight: 400; }
+
+                .media-contact-box {
+                    text-align: center;
+                    padding: 4rem 2rem !important;
+                    max-width: 800px;
+                    margin: 0 auto;
+                }
+
+                .contact-info-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 3rem;
+                    max-width: 600px;
+                    margin: 0 auto;
+                }
+
+                .contact-info-item {
+                    display: flex;
+                    gap: 1rem;
+                    align-items: center;
+                    text-align: left;
+                }
+
+                .info-icon {
+                    width: 48px;
+                    height: 48px;
+                    background: var(--bg-subtle);
+                    color: var(--accent);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                }
+
+                .item-label { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.2rem; }
+                .item-value { font-size: 1.05rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+
+                @media (max-width: 768px) {
+                    .resource-card { flex-direction: column; align-items: stretch; gap: 1.25rem; }
+                    .contact-info-grid { grid-template-columns: 1fr; gap: 2rem; }
+                }
+            `}</style>
         </div>
     );
 }
