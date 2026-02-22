@@ -1,317 +1,330 @@
-import { useEffect, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
-import { Menu, X, User, PlusCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Search, Bell, X, Info } from 'lucide-react';
 import Logo from './Logo';
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+
+function timeAgo(dateString) {
+    const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+    const diff = (new Date(dateString) - new Date()) / 1000;
+    if (Math.abs(diff) < 60) return rtf.format(Math.round(diff), 'second');
+    if (Math.abs(diff) < 3600) return rtf.format(Math.round(diff / 60), 'minute');
+    if (Math.abs(diff) < 86400) return rtf.format(Math.round(diff / 3600), 'hour');
+    return rtf.format(Math.round(diff / 86400), 'day');
+}
 
 export default function Header() {
+    const [notifications, setNotifications] = useState([]);
+    const [showPanel, setShowPanel] = useState(false);
     const [user, setUser] = useState(null);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isScrolled, setIsScrolled] = useState(false);
-    const navigate = useNavigate();
-    const location = useLocation();
 
     useEffect(() => {
-        supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
-
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            setUser(session?.user ?? null);
-        });
-
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 0);
+        const fetchUserAndNotifications = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                setUser(user);
+                loadNotifications(user.id);
+            }
         };
-        window.addEventListener('scroll', handleScroll);
+        fetchUserAndNotifications();
 
-        return () => {
-            subscription.unsubscribe();
-            window.removeEventListener('scroll', handleScroll);
-        };
+        // Optional: subscribe to real-time changes if we had that set up
     }, []);
 
-    const handleLogout = async () => {
-        await supabase.auth.signOut();
-        navigate('/');
+    const loadNotifications = async (userId) => {
+        const { data, error } = await supabase
+            .from('notifications')
+            .select('*')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: false })
+            .limit(20);
+        if (!error && data) {
+            setNotifications(data);
+        }
     };
 
-    const isActive = (path) => location.pathname === path;
+    const unreadCount = notifications.filter(n => !n.is_read).length;
 
+    const handleNotificationClick = async (notif) => {
+        if (!notif.is_read) {
+            const { error } = await supabase
+                .from('notifications')
+                .update({ is_read: true })
+                .eq('id', notif.id);
+
+            if (!error) {
+                setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, is_read: true } : n));
+            }
+        }
+    };
     return (
-        <header className={`apnicar-header ${isScrolled ? 'scrolled' : ''}`}>
-            <div className="container header-container">
-                <Logo variant="light" />
+        <header className="app-header">
+            <div className="header-content">
+                <div style={{ transform: 'scale(0.85)', transformOrigin: 'left center' }}>
+                    <Logo variant="light" />
+                </div>
 
-                <nav className="desktop-actions">
-                    <div className="nav-links">
-                        <Link to="/browse" className={`nav-link ${isActive('/browse') ? 'active' : ''}`}>Marketplace</Link>
-                        <Link to="/about" className={`nav-link ${isActive('/about') ? 'active' : ''}`}>About</Link>
-                        <Link to="/careers" className={`nav-link ${isActive('/careers') ? 'active' : ''}`}>Careers</Link>
-                    </div>
+                <div className="header-actions">
+                    <Link to="/browse" className="icon-btn">
+                        <Search size={22} />
+                    </Link>
+                    <div className="notification-wrapper">
+                        <button className="icon-btn" onClick={() => setShowPanel(!showPanel)}>
+                            <Bell size={22} />
+                            {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
+                        </button>
 
-                    <div className="user-actions">
-                        {user ? (
-                            <>
-                                <Link to="/dashboard" className={`account-link ${isActive('/dashboard') ? 'active' : ''}`}>
-                                    <User size={18} />
-                                    <span>Dashboard</span>
-                                </Link>
-                                <button onClick={handleLogout} className="logout-btn">Logout</button>
-                                <Link to="/add-vehicle" className="sell-btn">
-                                    <PlusCircle size={18} />
-                                    <span>Post Your Vehicle</span>
-                                </Link>
-                            </>
-                        ) : (
-                            <>
-                                <Link to="/seller-login" className={`login-link ${isActive('/seller-login') ? 'active' : ''}`}>Login</Link>
-                                <Link to="/seller-signup" className="sell-btn">
-                                    <PlusCircle size={18} />
-                                    <span>Post Your Vehicle</span>
-                                </Link>
-                            </>
+                        {/* Slide Down Panel */}
+                        {showPanel && user && (
+                            <div className="notif-panel animate-slide-down">
+                                <div className="notif-header">
+                                    <h3>Notifications</h3>
+                                    <button onClick={() => setShowPanel(false)} className="close-panel-btn">
+                                        <X size={18} />
+                                    </button>
+                                </div>
+                                <div className="notif-list">
+                                    {notifications.length === 0 ? (
+                                        <div className="notif-empty">
+                                            <Bell size={24} color="#cbd5e1" />
+                                            <p>No notifications yet.</p>
+                                        </div>
+                                    ) : (
+                                        notifications.map(notif => (
+                                            <div
+                                                key={notif.id}
+                                                className={`notif-item ${!notif.is_read ? 'unread' : ''}`}
+                                                onClick={() => handleNotificationClick(notif)}
+                                            >
+                                                <div className="notif-icon-box">
+                                                    <Info size={16} />
+                                                </div>
+                                                <div className="notif-content">
+                                                    <p className="notif-title">{notif.title}</p>
+                                                    <p className="notif-msg">{notif.message}</p>
+                                                    <span className="notif-time">
+                                                        {timeAgo(notif.created_at)}
+                                                    </span>
+                                                </div>
+                                                {!notif.is_read && <div className="unread-dot"></div>}
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
                         )}
                     </div>
-                </nav>
-
-                <div className="mobile-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                    {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
                 </div>
             </div>
 
-            {/* Mobile Menu */}
-            {isMenuOpen && (
-                <div className="mobile-overlay" onClick={() => setIsMenuOpen(false)}>
-                    <div className="mobile-menu" onClick={(e) => e.stopPropagation()}>
-                        <div className="mobile-menu-header">
-                            <Logo variant="light" />
-                            <div className="close-btn" onClick={() => setIsMenuOpen(false)}>
-                                <X size={28} />
-                            </div>
-                        </div>
-                        <div className="mobile-nav-links">
-                            <Link to="/browse" className={isActive('/browse') ? 'active' : ''} onClick={() => setIsMenuOpen(false)}>Marketplace</Link>
-                            <Link to="/about" className={isActive('/about') ? 'active' : ''} onClick={() => setIsMenuOpen(false)}>About Us</Link>
-                            <Link to="/careers" className={isActive('/careers') ? 'active' : ''} onClick={() => setIsMenuOpen(false)}>Careers</Link>
-                            {user ? (
-                                <>
-                                    <Link to="/dashboard" className={isActive('/dashboard') ? 'active' : ''} onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
-                                    <button onClick={() => { handleLogout(); setIsMenuOpen(false); }}>Logout Account</button>
-                                </>
-                            ) : (
-                                <Link to="/seller-login" className={isActive('/seller-login') ? 'active' : ''} onClick={() => setIsMenuOpen(false)}>Login to Account</Link>
-                            )}
-                        </div>
-                        <Link to={user ? "/add-vehicle" : "/seller-signup"} className="sell-btn-mobile" onClick={() => setIsMenuOpen(false)}>
-                            Post Your Vehicle Free
-                        </Link>
-                    </div>
-                </div>
-            )}
-
             <style>{`
-                .apnicar-header {
+                .app-header {
                     position: sticky;
                     top: 0;
-                    left: 0;
-                    right: 0;
                     z-index: 1000;
-                    background: white;
+                    background-color: rgba(255, 255, 255, 0.95);
+                    backdrop-filter: blur(10px);
                     border-bottom: 1px solid var(--border);
-                    transition: all 0.2s ease-in-out;
-                    height: 64px;
+                    height: 56px;
                     display: flex;
                     align-items: center;
-                }
-
-                .apnicar-header.scrolled {
-                    box-shadow: 0 4px 12px -5px rgba(0, 0, 0, 0.1);
-                }
-
-                .header-container {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                }
-
-                .desktop-actions {
-                    display: flex;
-                    align-items: center;
-                    gap: 2rem;
-                }
-
-                .nav-links {
-                    display: flex;
-                    gap: 1.5rem;
-                    align-items: center;
-                }
-
-                .nav-link {
-                    color: var(--text-secondary);
-                    font-weight: 500;
-                    font-size: 0.95rem;
-                    padding: 0.5rem 0;
-                    position: relative;
-                }
-
-                .nav-link:hover {
-                    color: var(--primary);
-                }
-
-                .nav-link.active {
-                    color: var(--accent);
-                    font-weight: 700;
-                }
-
-                .nav-link.active::after {
-                    content: '';
-                    position: absolute;
-                    bottom: -2px;
-                    left: 0;
-                    right: 0;
-                    height: 2px;
-                    background: var(--accent);
-                    border-radius: 2px;
-                }
-
-                .user-actions {
-                    display: flex;
-                    align-items: center;
-                    gap: 1.25rem;
-                }
-
-                .login-link, .account-link {
-                    color: var(--text-main);
-                    font-weight: 600;
-                    font-size: 0.95rem;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.4rem;
-                }
-
-                .login-link.active, .account-link.active {
-                    color: var(--accent);
-                }
-
-                .logout-btn {
-                    background: none;
-                    border: none;
-                    color: var(--text-muted);
-                    font-weight: 500;
-                    font-size: 0.85rem;
-                    cursor: pointer;
-                    transition: color 0.2s;
-                    padding: 0.2rem 0.5rem;
-                }
-
-                .logout-btn:hover {
-                    color: #ef4444;
-                }
-
-                .sell-btn {
-                    background: var(--primary);
-                    color: white;
-                    padding: 0.6rem 1.1rem;
-                    border-radius: 10px;
-                    font-weight: 700;
-                    font-size: 0.85rem;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.4rem;
-                    transition: all 0.2s;
-                }
-
-                .sell-btn:hover {
-                    background: var(--primary-hover);
-                    transform: translateY(-1px);
-                    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
-                }
-
-                .mobile-toggle {
-                    display: none;
-                    cursor: pointer;
-                    color: var(--primary);
-                }
-
-                .mobile-overlay {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(15, 23, 42, 0.5);
-                    backdrop-filter: blur(8px);
-                    z-index: 1001;
-                    display: flex;
-                    justify-content: flex-end;
-                }
-
-                .mobile-menu {
-                    width: 75%;
-                    max-width: 320px;
-                    height: 100%;
-                    background: white;
-                    padding: 1.5rem;
-                    display: flex;
-                    flex-direction: column;
-                    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
-                    animation: slideLeft 0.3s ease-out;
-                }
-
-                @keyframes slideLeft {
-                    from { transform: translateX(100%); }
-                    to { transform: translateX(0); }
-                }
-
-                .mobile-menu-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 2.5rem;
-                    padding-bottom: 1rem;
-                    border-bottom: 1px solid var(--border);
-                }
-
-                .mobile-nav-links {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1.25rem;
-                }
-
-                .mobile-nav-links a, .mobile-nav-links button {
-                    font-size: 1.1rem;
-                    font-weight: 600;
-                    color: var(--text-main);
-                    padding: 0.5rem 0;
-                    border: none;
-                    background: none;
-                    text-align: left;
+                    padding: 0 16px;
+                    padding-top: env(safe-area-inset-top, 0);
                     width: 100%;
                 }
 
-                .mobile-nav-links a.active {
-                    color: var(--accent);
-                    font-weight: 800;
+                .header-content {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
                 }
 
-                .sell-btn-mobile {
-                    background: var(--primary);
+                .header-actions {
+                    display: flex;
+                    align-items: center;
+                    gap: 16px;
+                }
+
+                .icon-btn {
+                    color: var(--text-main);
+                    padding: 4px;
+                    background: none;
+                    border: none;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    -webkit-tap-highlight-color: transparent;
+                }
+
+                .notification-wrapper {
+                    position: relative;
+                }
+
+                .notif-badge {
+                    position: absolute;
+                    top: 0px;
+                    right: 4px;
+                    background: #ef4444;
                     color: white;
-                    padding: 1rem;
-                    text-align: center;
-                    border-radius: 12px;
-                    margin-top: auto;
+                    font-size: 0.65rem;
                     font-weight: 800;
+                    height: 16px;
+                    min-width: 16px;
+                    padding: 0 4px;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border: 2px solid white;
+                }
+
+                .notif-panel {
+                    position: absolute;
+                    top: 48px;
+                    right: -16px; /* Align to edge on mobile */
+                    width: 100vw;
+                    max-width: 360px;
+                    background: white;
+                    border-radius: 0 0 16px 16px;
+                    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.15);
+                    border: 1px solid var(--border);
+                    border-top: none;
+                    overflow: hidden;
+                    display: flex;
+                    flex-direction: column;
+                    z-index: 2000;
+                }
+
+                @media (min-width: 480px) {
+                    .notif-panel {
+                        right: 0;
+                        width: 360px;
+                        border-radius: 16px;
+                        border-top: 1px solid var(--border);
+                    }
+                }
+
+                .notif-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 16px;
+                    border-bottom: 1px solid var(--border);
+                    background: #f8fafc;
+                }
+
+                .notif-header h3 {
+                    margin: 0;
                     font-size: 1rem;
+                    font-weight: 800;
+                    color: var(--primary);
                 }
 
-                @media (max-width: 1024px) {
-                    .desktop-actions { display: none; }
-                    .mobile-toggle { display: block; }
-                    .apnicar-header { height: 56px; }
+                .close-panel-btn {
+                    background: none;
+                    border: none;
+                    color: var(--text-muted);
+                    padding: 4px;
+                    display: flex;
                 }
 
-                @media (max-width: 768px) {
-                    .container { padding: 0 1rem; }
+                .notif-list {
+                    max-height: 400px;
+                    overflow-y: auto;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .notif-empty {
+                    padding: 40px 20px;
+                    text-align: center;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 12px;
+                    color: var(--text-muted);
+                    font-weight: 500;
+                }
+                .notif-empty p { margin: 0; }
+
+                .notif-item {
+                    display: flex;
+                    gap: 12px;
+                    padding: 16px;
+                    border-bottom: 1px solid var(--border);
+                    background: white;
+                    transition: background 0.2s;
+                    cursor: pointer;
+                    align-items: flex-start;
+                }
+
+                .notif-item:last-child {
+                    border-bottom: none;
+                }
+
+                .notif-item.unread {
+                    background: #f0fdf4;
+                }
+
+                .notif-icon-box {
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    background: #dcfce7;
+                    color: #16a34a;
+                    display: flex;
+                    flex-shrink: 0;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .notif-content {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                }
+
+                .notif-title {
+                    margin: 0;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    color: var(--primary);
+                }
+
+                .notif-msg {
+                    margin: 0;
+                    font-size: 0.85rem;
+                    color: var(--text-secondary);
+                    line-height: 1.3;
+                }
+
+                .notif-time {
+                    font-size: 0.75rem;
+                    color: var(--text-muted);
+                    font-weight: 500;
+                }
+
+                .unread-dot {
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background: #2563eb;
+                    margin-top: 6px;
+                    flex-shrink: 0;
+                }
+
+                .animate-slide-down {
+                    animation: slideDownPanel 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+                    transform-origin: top right;
+                }
+
+                @keyframes slideDownPanel {
+                    from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+                    to { opacity: 1; transform: scale(1) translateY(0); }
                 }
             `}</style>
         </header>

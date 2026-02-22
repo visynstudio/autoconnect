@@ -86,3 +86,44 @@ create policy "Public Access" on storage.objects for select using ( bucket_id = 
 create policy "Authenticated users can upload" on storage.objects for insert with check ( bucket_id = 'vehicle-images' and auth.role() = 'authenticated' );
 create policy "Users can update own" on storage.objects for update using ( bucket_id = 'vehicle-images' and auth.uid() = owner );
 create policy "Users can delete own" on storage.objects for delete using ( bucket_id = 'vehicle-images' and auth.uid() = owner );
+
+-- 4. Create NOTIFICATIONS table
+create table public.notifications (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users not null,
+  title text not null,
+  message text not null,
+  type text not null,
+  is_read boolean default false,
+  created_at timestamptz default now()
+);
+
+-- Security: Enable RLS
+alter table public.notifications enable row level security;
+
+-- Policies for NOTIFICATIONS
+-- Users can view their own notifications
+create policy "Users can view their own notifications." on public.notifications for select using (auth.uid() = user_id);
+-- Anyone (system) can insert notifications
+create policy "Users can insert notifications." on public.notifications for insert with check (true);
+-- Users can update (mark as read) their own notifications
+create policy "Users can update their own notifications." on public.notifications for update using (auth.uid() = user_id);
+-- Users can delete their own notifications
+create policy "Users can delete their own notifications." on public.notifications for delete using (auth.uid() = user_id);
+
+-- 5. Create SAVED_VEHICLES table
+create table public.saved_vehicles (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users not null,
+  vehicle_id uuid references public.vehicles(id) on delete cascade not null,
+  created_at timestamptz default now(),
+  unique(user_id, vehicle_id)
+);
+
+-- Security: Enable RLS
+alter table public.saved_vehicles enable row level security;
+
+-- Policies for SAVED_VEHICLES
+create policy "Users can view their own saved vehicles" on public.saved_vehicles for select using (auth.uid() = user_id);
+create policy "Users can insert their own saved vehicles" on public.saved_vehicles for insert with check (auth.uid() = user_id);
+create policy "Users can delete their own saved vehicles" on public.saved_vehicles for delete using (auth.uid() = user_id);

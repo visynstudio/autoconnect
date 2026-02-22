@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Home from './pages/Home';
 import Browse from './pages/Browse';
@@ -13,14 +13,21 @@ import Press from './pages/Press';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Contact from './pages/Contact';
+import Saved from './pages/Saved';
 
-import Footer from './components/Footer';
+import BottomNav from './components/BottomNav';
 
 function App() {
+  const location = useLocation();
+
+  const hideBottomNavRoutes = ['/add-vehicle', '/seller-login', '/seller-signup'];
+  const hideBottomNavPrefixes = ['/vehicle/'];
+  const hideBottomNav = hideBottomNavRoutes.includes(location.pathname) || hideBottomNavPrefixes.some(prefix => location.pathname.startsWith(prefix));
+
   return (
     <>
       <Header />
-      <main style={{ minHeight: 'calc(100vh - 64px)' }}> {/* Adjusted for new header height */}
+      <main style={{ paddingBottom: hideBottomNav ? '0px' : '80px', flex: 1 }}> {/* Space for bottom nav */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/browse" element={<Browse />} />
@@ -35,9 +42,10 @@ function App() {
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/saved" element={<Saved />} />
         </Routes>
       </main>
-      <Footer />
+      {!hideBottomNav && <BottomNav />}
     </>
   );
 }

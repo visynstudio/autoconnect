@@ -1,21 +1,17 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import {
-    LayoutDashboard, PlusCircle, Car, LogOut, Trash2,
-    MapPin, Fuel, Calendar, MoreVertical, AlertCircle, X, ChevronRight, Eye, Settings, User
-} from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { PlusCircle, LogOut, ChevronRight, User, Settings, Eye, Trash2, X, Phone, MapPin, Edit3 } from 'lucide-react';
 
 export default function Dashboard() {
     const [vehicles, setVehicles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
     const [sellerProfile, setSellerProfile] = useState(null);
+    const [isEditingProfile, setIsEditingProfile] = useState(false);
+    const [editForm, setEditForm] = useState({ name: '', phone: '', city: '' });
+    const [savingProfile, setSavingProfile] = useState(false);
     const navigate = useNavigate();
-    const location = useLocation();
-
-    // Sidebar state (mobile)
-    const [isSidebarOpen, setSidebarOpen] = useState(false);
 
     useEffect(() => {
         async function init() {
@@ -49,14 +45,27 @@ export default function Dashboard() {
         init();
     }, [navigate]);
 
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        navigate('/');
+    };
+
     const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this listing? This action cannot be undone.')) return;
+        if (!confirm('Are you sure you want to delete this listing?')) return;
+        const vehicle = vehicles.find(v => v.id === id);
 
         const { error } = await supabase.from('vehicles').delete().eq('id', id);
         if (!error) {
             setVehicles(vehicles.filter(v => v.id !== id));
-        } else {
-            alert('Error deleting: ' + error.message);
+            // Dispatch Notification
+            if (vehicle) {
+                await supabase.from('notifications').insert({
+                    user_id: user.id,
+                    title: 'Listing Deleted',
+                    message: `Your ${vehicle.brand} ${vehicle.model} has been successfully deleted from our records.`,
+                    type: 'system'
+                });
+            }
         }
     };
 
@@ -75,454 +84,558 @@ export default function Dashboard() {
         }
     };
 
-    const handleLogout = async () => {
-        await supabase.auth.signOut();
-        navigate('/');
+    const handleEditPrice = async (vehicle) => {
+        const newPrice = window.prompt(`Update your asking price for ${vehicle.brand} ${vehicle.model}:`, vehicle.price);
+        if (!newPrice) return;
+        const parsedPrice = parseFloat(newPrice);
+        if (isNaN(parsedPrice) || parsedPrice <= 0) return alert('Invalid price');
+
+        const { error } = await supabase.from('vehicles').update({ price: parsedPrice }).eq('id', vehicle.id);
+        if (!error) {
+            setVehicles(vehicles.map(v => v.id === vehicle.id ? { ...v, price: parsedPrice } : v));
+
+            // Notify local buyers of price drop if newPrice < oldPrice
+            if (parsedPrice < vehicle.price) {
+                try {
+                    const { data: locals } = await supabase.from('sellers').select('id').ilike('city', vehicle.location);
+                    if (locals && locals.length > 0) {
+                        const buyerNotifs = locals.filter(s => s.id !== user.id).map(s => ({
+                            user_id: s.id,
+                            title: 'Price Drop Alert',
+                            message: `The ${vehicle.brand} ${vehicle.model} in ${vehicle.location} just dropped to ₹${parsedPrice.toLocaleString('en-IN')}.`,
+                            type: 'system'
+                        }));
+                        if (buyerNotifs.length > 0) {
+                            await supabase.from('notifications').insert(buyerNotifs);
+                        }
+                    }
+                } catch (e) { }
+            }
+        } else {
+            alert('Failed to update price');
+        }
     };
 
-    // Close sidebar on route change
-    useEffect(() => {
-        setSidebarOpen(false);
-    }, [location]);
+    const openSettings = () => {
+        setEditForm({
+            name: sellerProfile?.name || '',
+            phone: sellerProfile?.phone || '',
+            city: sellerProfile?.city || ''
+        });
+        setIsEditingProfile(true);
+    };
+
+    const handleSaveProfile = async (e) => {
+        e.preventDefault();
+        setSavingProfile(true);
+        const { error } = await supabase
+            .from('sellers')
+            .upsert({
+                id: user.id,
+                name: editForm.name,
+                phone: editForm.phone,
+                city: editForm.city
+            }, { onConflict: 'id' });
+
+        if (!error) {
+            setSellerProfile(prev => ({ ...prev, name: editForm.name, phone: editForm.phone, city: editForm.city }));
+            setIsEditingProfile(false);
+        } else {
+            alert('Failed to update profile: ' + error.message);
+        }
+        setSavingProfile(false);
+    };
 
     if (loading) return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-            <div className="animate-spin" style={{ width: '40px', height: '40px', border: '3px solid #f3f3f3', borderTop: '3px solid var(--primary)', borderRadius: '50%' }}></div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh', color: 'var(--text-muted)' }}>
+            Loading Profile...
         </div>
     );
 
     const liveCount = vehicles.filter(v => v.is_live).length;
-    const totalCount = vehicles.length;
-    const remainingSlots = 5 - liveCount;
     const isLimitReached = liveCount >= 5;
 
     return (
-        <div className="dashboard-container">
-            {/* Mobile Sidebar Overlay */}
-            <div
-                className={`sidebar-overlay ${isSidebarOpen ? 'open' : ''}`}
-                onClick={() => setSidebarOpen(false)}
-            ></div>
+        <div className="app-profile">
+            {/* Header Area */}
+            <div className="profile-header">
+                <h2>Profile</h2>
+                <button className="settings-btn" onClick={openSettings}><Settings size={20} color="var(--primary)" /></button>
+            </div>
 
-            {/* SIDEBAR */}
-            <aside className={`dashboard-sidebar ${isSidebarOpen ? 'open' : ''}`}>
-                <div className="sidebar-header">
-                    <span className="sidebar-brand">Seller Center</span>
-                    <button className="mobile-close" onClick={() => setSidebarOpen(false)}><X size={24} /></button>
+            {/* User Info Card */}
+            <div className="user-info-section">
+                <div className="user-avatar">
+                    <User size={36} color="white" />
                 </div>
+                <div className="user-details">
+                    <h3>{sellerProfile?.name || 'ApniCar User'}</h3>
+                    <p>{sellerProfile?.city || 'No Location'}</p>
+                </div>
+            </div>
 
-                <nav className="sidebar-nav">
-                    <Link to="/dashboard" className={`nav-item ${location.pathname === '/dashboard' ? 'active' : ''}`}>
-                        <LayoutDashboard size={20} />
-                        <span>Overview</span>
-                    </Link>
-                    <Link to="/add-vehicle" className={`nav-item ${isLimitReached ? 'disabled' : ''}`}>
+            {/* Quick Stats */}
+            <div className="stats-row">
+                <div className="stat-pill">
+                    <strong>{vehicles.length}</strong>
+                    <span>Total Ads</span>
+                </div>
+                <div className="stat-pill">
+                    <strong>{liveCount}/5</strong>
+                    <span>Live Ads</span>
+                </div>
+            </div>
+
+            {/* Actions List */}
+            <div className="action-list">
+                <Link to="/add-vehicle" className="action-item" onClick={(e) => { if (isLimitReached) { e.preventDefault(); alert("You reached the 5 live listings limit."); } }}>
+                    <div className="icon-bg" style={{ background: '#dbeafe', color: '#2563eb' }}>
                         <PlusCircle size={20} />
-                        <span>Add Vehicle</span>
-                    </Link>
-                    <div className="nav-divider"></div>
-                    <button onClick={handleLogout} className="nav-item logout">
+                    </div>
+                    <span>Post New Ad</span>
+                    <ChevronRight size={18} color="#94a3b8" style={{ marginLeft: 'auto' }} />
+                </Link>
+                <button onClick={handleLogout} className="action-item logout-item">
+                    <div className="icon-bg" style={{ background: '#fee2e2', color: '#ef4444' }}>
                         <LogOut size={20} />
-                        <span>Sign Out</span>
-                    </button>
-                </nav>
-
-                <div className="sidebar-profile">
-                    <div className="profile-inner">
-                        <div className="profile-avatar">
-                            <User size={20} />
-                        </div>
-                        <div className="profile-meta">
-                            <p className="profile-name">{sellerProfile?.name || 'Seller'}</p>
-                            <p className="profile-loc">{sellerProfile?.city}</p>
-                        </div>
                     </div>
-                </div>
-            </aside>
+                    <span>Log Out</span>
+                    <ChevronRight size={18} color="#94a3b8" style={{ marginLeft: 'auto' }} />
+                </button>
+            </div>
 
-            {/* MAIN CONTENT */}
-            <main className="dashboard-main">
-                {/* Mobile Header Bar */}
-                <div className="mobile-header-bar">
-                    <button onClick={() => setSidebarOpen(true)} className="mobile-trigger">
-                        <LayoutDashboard size={24} />
-                    </button>
-                    <span className="mobile-title">Dashboard</span>
-                </div>
+            <div className="divider-thick"></div>
 
-                <div className="dashboard-content">
-                    <header className="content-header">
-                        <div>
-                            <h1 className="page-title">Listing Dashboard</h1>
-                            <p className="page-subtitle">Welcome back, {sellerProfile?.name?.split(' ')[0] || 'Seller'}</p>
-                        </div>
-                        <Link to="/add-vehicle" className={`btn btn-primary dash-cta-btn ${isLimitReached ? 'disabled' : ''}`}>
-                            <PlusCircle size={20} />
-                            <span>Post New Ad</span>
-                        </Link>
-                    </header>
-
-                    {/* Stats Section */}
-                    <div className="stats-row">
-                        <div className="stat-card">
-                            <div className="stat-icon-box blue">
-                                <Car size={24} />
-                            </div>
-                            <div className="stat-info">
-                                <span className="stat-label">Total Listings</span>
-                                <span className="stat-value">{totalCount}</span>
-                            </div>
-                        </div>
-                        <div className="stat-card">
-                            <div className="stat-icon-box green">
-                                <Eye size={24} />
-                            </div>
-                            <div className="stat-info">
-                                <span className="stat-label">Active Now</span>
-                                <span className="stat-value">{liveCount}</span>
-                            </div>
-                        </div>
-                        <div className="stat-card">
-                            <div className="stat-icon-box orange">
-                                <AlertCircle size={24} />
-                            </div>
-                            <div className="stat-info">
-                                <span className="stat-label">Slots Left</span>
-                                <span className="stat-value" style={{ color: remainingSlots === 0 ? 'var(--error)' : 'inherit' }}>
-                                    {remainingSlots}
-                                </span>
-                            </div>
-                        </div>
+            {/* My Garage */}
+            <div className="garage-section">
+                <h3 className="section-title">My Garage</h3>
+                {vehicles.length === 0 ? (
+                    <div className="empty-garage">
+                        <img src="https://placehold.co/100x100/f8fafc/cbd5e1?text=Car" alt="Empty" style={{ borderRadius: '50%' }} />
+                        <p>No listings created yet</p>
                     </div>
-
-                    {/* Content Body */}
-                    <div className="content-body">
-                        <div className="body-header">
-                            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--primary)' }}>My Managed Listings</h2>
-                        </div>
-
-                        {vehicles.length === 0 ? (
-                            <div className="empty-state-v3">
-                                <div className="empty-v3-icon">
-                                    <Car size={48} strokeWidth={1} />
-                                </div>
-                                <h3>No listings created yet</h3>
-                                <p>Start selling by posting your first vehicle listing.</p>
-                                <Link to="/add-vehicle" className="btn btn-outline">Add Your First Vehicle</Link>
-                            </div>
-                        ) : (
-                            <div className="listings-stack">
-                                {vehicles.map(vehicle => (
-                                    <div key={vehicle.id} className="listing-card card">
-                                        <div className="listing-thumb">
-                                            <img
-                                                src={vehicle.vehicle_images?.[0]?.image_url || 'https://placehold.co/400x300?text=No+Photo'}
-                                                alt={vehicle.model}
-                                            />
-                                            <div className={`listing-badge ${vehicle.is_live ? 'is-live' : 'is-sold'}`}>
-                                                {vehicle.is_live ? 'ACTIVE' : 'OFFLINE'}
-                                            </div>
-                                        </div>
-
-                                        <div className="listing-info">
-                                            <div className="listing-main">
-                                                <h3 className="listing-title">{vehicle.year} {vehicle.brand} {vehicle.model}</h3>
-                                                <p className="listing-price">
-                                                    {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(vehicle.price)}
-                                                </p>
-                                            </div>
-                                            <div className="listing-tags">
-                                                <span>{vehicle.km_driven.toLocaleString()} km</span>
-                                                <span>{vehicle.fuel_type}</span>
-                                                <span>{vehicle.location}</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="listing-actions">
-                                            <button
-                                                onClick={() => toggleLive(vehicle)}
-                                                className={`btn dash-action-btn ${vehicle.is_live ? 'btn-deactivate' : 'btn-activate'}`}
-                                            >
-                                                {vehicle.is_live ? 'Mark Sold' : 'Relist'}
-                                            </button>
-                                            <div className="action-icons">
-                                                <Link to={`/vehicle/${vehicle.id}`} className="icon-btn-dash info" title="Preview">
-                                                    <Eye size={18} />
-                                                </Link>
-                                                <button onClick={() => handleDelete(vehicle.id)} className="icon-btn-dash danger" title="Delete">
-                                                    <Trash2 size={18} />
-                                                </button>
-                                            </div>
-                                        </div>
+                ) : (
+                    <div className="garage-list">
+                        {vehicles.map(v => (
+                            <div key={v.id} className="garage-item">
+                                <img src={v.vehicle_images?.[0]?.image_url || 'https://placehold.co/200x200?text=No+Photo'} alt={v.model} />
+                                <div className="garage-info">
+                                    <h4 className="g-title">{v.brand} {v.model}</h4>
+                                    <span className="g-price">₹{v.price.toLocaleString('en-IN')}</span>
+                                    <div className="g-status-block">
+                                        <span className={`g-status ${v.is_live ? 'live' : 'offline'}`}>
+                                            {v.is_live ? 'Active' : 'Offline'}
+                                        </span>
                                     </div>
-                                ))}
+                                    <div className="g-actions">
+                                        <button className={`g-btn ${v.is_live ? 'outline' : 'fill'}`} onClick={() => toggleLive(v)}>
+                                            {v.is_live ? 'Deactivate' : 'Publish'}
+                                        </button>
+                                        <button className="g-icon-btn edit" onClick={() => handleEditPrice(v)}><Edit3 size={16} /></button>
+                                        <Link to={`/vehicle/${v.id}`} className="g-icon-btn"><Eye size={16} /></Link>
+                                        <button className="g-icon-btn delete" onClick={() => handleDelete(v.id)}><Trash2 size={16} /></button>
+                                    </div>
+                                </div>
                             </div>
-                        )}
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Edit Profile Drawer */}
+            {isEditingProfile && (
+                <div className="edit-drawer animate-slide-up">
+                    <div className="drawer-header">
+                        <button className="drawer-close" onClick={() => setIsEditingProfile(false)}>
+                            <X size={24} />
+                        </button>
+                        <h2>Edit Profile</h2>
+                        <div style={{ width: 44 }}></div>
+                    </div>
+                    <div className="drawer-content">
+                        <form onSubmit={handleSaveProfile} className="edit-form-flex">
+                            <div className="edit-input-group">
+                                <label>Full Name</label>
+                                <div className="edit-input-wrapper">
+                                    <User size={20} color="#94a3b8" />
+                                    <input
+                                        type="text" required
+                                        value={editForm.name}
+                                        onChange={(e) => setEditForm(prev => ({ ...prev, name: e.target.value }))}
+                                    />
+                                </div>
+                            </div>
+                            <div className="edit-input-group">
+                                <label>Phone Number</label>
+                                <div className="edit-input-wrapper">
+                                    <Phone size={20} color="#94a3b8" />
+                                    <input
+                                        type="tel" required
+                                        value={editForm.phone}
+                                        onChange={(e) => setEditForm(prev => ({ ...prev, phone: e.target.value }))}
+                                    />
+                                </div>
+                            </div>
+                            <div className="edit-input-group">
+                                <label>City</label>
+                                <div className="edit-input-wrapper">
+                                    <MapPin size={20} color="#94a3b8" />
+                                    <input
+                                        type="text" required
+                                        value={editForm.city}
+                                        onChange={(e) => setEditForm(prev => ({ ...prev, city: e.target.value }))}
+                                    />
+                                </div>
+                            </div>
+
+                            <button type="submit" disabled={savingProfile} className="drawer-save-btn">
+                                {savingProfile ? 'Saving...' : 'Save Details'}
+                            </button>
+                        </form>
                     </div>
                 </div>
-            </main>
+            )}
 
             <style>{`
-                .dashboard-container {
-                    display: flex;
-                    min-height: 100vh;
-                    background-color: var(--bg-subtle);
-                }
-
-                /* Sidebar */
-                .dashboard-sidebar {
-                    width: 280px;
-                    background: #ffffff;
-                    border-right: 1px solid var(--border);
+                .app-profile {
+                    background: #f8fafc;
+                    min-height: calc(100vh - 56px - 60px);
                     display: flex;
                     flex-direction: column;
-                    position: sticky;
-                    top: 0;
-                    height: 100vh;
-                    z-index: 100;
-                    transition: transform 0.3s ease;
                 }
 
-                .sidebar-header {
-                    padding: 2rem 1.5rem;
+                .profile-header {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
+                    padding: 16px;
+                    background: white;
                 }
 
-                .sidebar-brand {
+                .profile-header h2 {
+                    margin: 0;
                     font-size: 1.25rem;
                     font-weight: 800;
                     color: var(--primary);
-                    letter-spacing: -0.02em;
                 }
 
-                .sidebar-nav {
-                    padding: 0 1rem;
-                    flex: 1;
+                .settings-btn {
+                    padding: 8px;
+                    background: var(--bg-subtle);
+                    border-radius: 50%;
+                    border: none;
                 }
 
-                .nav-item {
+                .user-info-section {
                     display: flex;
                     align-items: center;
-                    gap: 1rem;
-                    padding: 0.85rem 1rem;
-                    border-radius: 12px;
-                    color: var(--text-secondary);
-                    font-weight: 700;
-                    text-decoration: none;
-                    margin-bottom: 0.5rem;
-                    transition: all 0.2s;
-                    border: none;
-                    background: transparent;
-                    width: 100%;
-                    text-align: left;
-                    cursor: pointer;
-                    font-size: 0.95rem;
+                    padding: 24px 16px;
+                    background: white;
+                    gap: 16px;
                 }
 
-                .nav-item:hover {
-                    background: var(--bg-subtle);
+                .user-avatar {
+                    width: 72px;
+                    height: 72px;
+                    border-radius: 50%;
+                    background: var(--accent);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 4px 12px rgba(37,99,235,0.2);
+                }
+
+                .user-details h3 {
+                    margin: 0;
+                    font-size: 1.25rem;
+                    font-weight: 800;
                     color: var(--primary);
                 }
 
-                .nav-item.active {
-                    background: var(--accent);
-                    color: #ffffff;
+                .user-details p {
+                    margin: 4px 0 0 0;
+                    font-size: 0.9rem;
+                    color: var(--text-secondary);
                 }
 
-                .nav-item.logout {
-                    color: #ef4444;
-                    margin-top: 1rem;
-                }
-
-                .nav-item.logout:hover {
-                    background: #fee2e2;
-                }
-
-                .nav-divider {
-                    height: 1px;
-                    background: var(--border);
-                    margin: 1.5rem 1rem;
-                }
-
-                .sidebar-profile {
-                    padding: 1.5rem;
-                    border-top: 1px solid var(--border);
-                }
-
-                .profile-inner {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.75rem;
-                    background: var(--bg-subtle);
-                    padding: 0.75rem;
-                    border-radius: 12px;
-                }
-
-                .profile-avatar {
-                    width: 40px;
-                    height: 40px;
-                    background: var(--primary);
-                    color: #ffffff;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-
-                .profile-name { font-weight: 800; font-size: 0.85rem; color: var(--primary); margin: 0; }
-                .profile-loc { font-size: 0.75rem; color: var(--text-muted); margin: 0; }
-
-                /* Main Content */
-                .dashboard-main {
-                    flex: 1;
-                    min-width: 0;
-                }
-
-                .dashboard-content {
-                    padding: 3rem;
-                    max-width: 1200px;
-                }
-
-                .content-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: flex-end;
-                    margin-bottom: 3rem;
-                }
-
-                /* Stats Row */
                 .stats-row {
-                    display: grid;
-                    grid-template-columns: repeat(3, 1fr);
-                    gap: 1.5rem;
-                    margin-bottom: 3rem;
-                }
-
-                .stat-card {
-                    background: #ffffff;
-                    padding: 1.5rem;
-                    border-radius: 12px;
-                    border: 1px solid var(--border);
                     display: flex;
-                    align-items: center;
-                    gap: 1.25rem;
-                    box-shadow: var(--shadow-sm);
+                    gap: 12px;
+                    padding: 0 16px 20px;
+                    background: white;
                 }
 
-                .stat-icon-box {
-                    width: 54px;
-                    height: 54px;
-                    border-radius: 12px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-
-                .stat-icon-box.blue { background: #eff6ff; color: #2563eb; }
-                .stat-icon-box.green { background: #f0fdf4; color: #16a34a; }
-                .stat-icon-box.orange { background: #fff7ed; color: #f97316; }
-
-                .stat-label { display: block; font-size: 0.85rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-                .stat-value { font-size: 1.75rem; font-weight: 800; color: var(--primary); line-height: 1.2; }
-
-                /* Listings Stack */
-                .listings-stack {
+                .stat-pill {
+                    flex: 1;
                     display: flex;
                     flex-direction: column;
-                    gap: 1rem;
-                }
-
-                .listing-card {
-                    display: flex;
-                    gap: 1.5rem;
-                    padding: 1rem !important;
                     align-items: center;
-                }
-
-                .listing-thumb {
-                    width: 140px;
-                    height: 100px;
-                    border-radius: 10px;
-                    overflow: hidden;
-                    position: relative;
-                    flex-shrink: 0;
                     background: var(--bg-subtle);
+                    padding: 12px;
+                    border-radius: 12px;
+                    border: 1px solid var(--border);
                 }
 
-                .listing-thumb img { width: 100%; height: 100%; object-fit: cover; }
+                .stat-pill strong { font-size: 1.25rem; color: var(--primary); font-weight: 800; }
+                .stat-pill span { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-top: 4px;}
 
-                .listing-badge {
-                    position: absolute;
-                    top: 6px;
-                    left: 6px;
-                    font-size: 0.65rem;
+                /* Drawer Styles */
+                .edit-drawer {
+                    position: fixed;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    max-width: 480px;
+                    margin: 0 auto;
+                    background: #ffffff;
+                    z-index: 2000;
+                    display: flex;
+                    flex-direction: column;
+                }
+                .drawer-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 16px;
+                    border-bottom: 1px solid var(--border);
+                }
+                .drawer-header h2 {
+                    margin: 0;
+                    font-size: 1.1rem;
                     font-weight: 800;
-                    padding: 2px 6px;
-                    border-radius: 4px;
-                    color: #ffffff;
+                    color: var(--primary);
                 }
-
-                .listing-badge.is-live { background: #16a34a; }
-                .listing-badge.is-sold { background: #475569; }
-
-                .listing-info { flex: 1; min-width: 0; }
-                .listing-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); margin-bottom: 0.35rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-                .listing-price { font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem; }
-
-                .listing-tags { display: flex; gap: 0.5rem; }
-                .listing-tags span { background: var(--bg-subtle); color: var(--text-secondary); font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 6px; }
-
-                .listing-actions {
+                .drawer-close {
+                    width: 44px;
+                    height: 44px;
                     display: flex;
                     align-items: center;
-                    gap: 1rem;
+                    justify-content: center;
+                    border-radius: 50%;
+                    background: var(--bg-subtle);
+                    color: var(--primary);
+                    border: none;
+                }
+                .drawer-content {
+                    padding: 24px;
+                    flex: 1;
+                    overflow-y: auto;
+                }
+                .edit-form-flex {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+                }
+                .edit-input-group label {
+                    display: block;
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    color: var(--text-secondary);
+                    margin-bottom: 8px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                }
+                .edit-input-wrapper {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    background: var(--bg-subtle);
+                    border: 1px solid var(--border);
+                    border-radius: 16px;
+                    padding: 0 16px;
+                    height: 56px;
+                    transition: border-color 0.2s;
+                }
+                .edit-input-wrapper:focus-within {
+                    border-color: var(--accent);
+                }
+                .edit-input-wrapper input {
+                    flex: 1;
+                    height: 100%;
+                    background: transparent;
+                    border: none;
+                    outline: none;
+                    font-size: 1rem;
+                    color: var(--primary);
+                    font-weight: 500;
+                    width: 100%;
+                }
+                .drawer-save-btn {
+                    margin-top: 24px;
+                    height: 56px;
+                    border-radius: 16px;
+                    background: var(--primary);
+                    color: white;
+                    font-size: 1.1rem;
+                    font-weight: 700;
+                    border: none;
+                    box-shadow: 0 8px 16px rgba(15, 23, 42, 0.15);
+                }
+                .drawer-save-btn:disabled {
+                    opacity: 0.7;
+                }
+                .animate-slide-up {
+                    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+                @keyframes slideUp {
+                    from { opacity: 0; transform: translateY(100%); }
+                    to { opacity: 1; transform: translateY(0); }
                 }
 
-                .dash-action-btn { font-size: 0.85rem; height: 40px; padding: 0 1rem; border-radius: 8px; width: 110px; }
-                .btn-activate { background: #f0fdf4; color: #16a34a; }
-                .btn-activate:hover { background: #dcfce7; }
-                .btn-deactivate { background: #fee2e2; color: #dc2626; }
-                .btn-deactivate:hover { background: #fecaca; }
+                .action-list {
+                    background: white;
+                    padding: 0 16px 16px;
+                }
 
-                .action-icons { display: flex; gap: 0.5rem; }
-                .icon-btn-dash { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; border: 1px solid var(--border); color: var(--text-secondary); }
-                .icon-btn-dash.info:hover { color: var(--accent); border-color: var(--accent); background: #f0f7ff; }
-                .icon-btn-dash.danger:hover { color: #dc2626; border-color: #dc2626; background: #fef2f2; }
+                .action-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 16px;
+                    padding: 16px;
+                    background: var(--bg-subtle);
+                    border-radius: 16px;
+                    margin-bottom: 12px;
+                    text-decoration: none;
+                    border: 1px solid var(--border);
+                    cursor: pointer;
+                    width: 100%;
+                    text-align: left;
+                }
 
-                /* Generic */
-                .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 90; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); }
-                .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
-                .mobile-header-bar { display: none; padding: 1rem 1.5rem; background: #ffffff; border-bottom: 1px solid var(--border); align-items: center; gap: 1rem; position: sticky; top: 0; z-index: 80; }
-                
-                .empty-state-v3 {
-                    text-align: center;
-                    padding: 4rem 2rem;
-                    border: 2px dashed var(--border);
+                .action-item span {
+                    font-size: 1rem;
+                    font-weight: 700;
+                    color: var(--primary);
+                }
+
+                .icon-bg {
+                    width: 40px;
+                    height: 40px;
                     border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .divider-thick {
+                    height: 8px;
+                    background: var(--border);
+                    opacity: 0.5;
+                }
+
+                .garage-section {
+                    padding: 24px 16px;
+                    background: white;
+                    flex: 1;
+                }
+
+                .section-title {
+                    font-size: 1.15rem;
+                    font-weight: 800;
+                    color: var(--primary);
+                    margin: 0 0 16px 0;
+                }
+
+                .empty-garage {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 40px 0;
+                    color: var(--text-muted);
+                    font-weight: 600;
+                }
+
+                .garage-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 16px;
+                }
+
+                .garage-item {
+                    display: flex;
+                    gap: 16px;
+                    padding: 12px;
+                    border: 1px solid var(--border);
+                    border-radius: 16px;
                     background: #ffffff;
                 }
-                .empty-v3-icon { margin-bottom: 1.5rem; color: var(--text-muted); }
 
-                @media (max-width: 1024px) {
-                    .dashboard-sidebar {
-                        position: fixed;
-                        transform: translateX(-100%);
-                    }
-                    .dashboard-sidebar.open { transform: translateX(0); }
-                    .mobile-header-bar { display: flex; }
-                    .dashboard-content { padding: 2rem 1.5rem; }
-                    .content-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-                    .dash-cta-btn { width: 100%; }
+                .garage-item img {
+                    width: 100px;
+                    height: 100px;
+                    border-radius: 12px;
+                    object-fit: cover;
                 }
 
-                @media (max-width: 768px) {
-                    .stats-row { grid-template-columns: 1fr; }
-                    .listing-card { flex-direction: column; align-items: stretch; }
-                    .listing-thumb { width: 100%; height: 200px; }
-                    .listing-actions { border-top: 1px solid var(--border); padding-top: 1rem; justify-content: space-between; }
+                .garage-info {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
                 }
+
+                .g-title {
+                    margin: 0;
+                    font-size: 0.95rem;
+                    font-weight: 700;
+                    color: var(--text-main);
+                }
+
+                .g-price {
+                    font-size: 1.1rem;
+                    font-weight: 800;
+                    color: var(--accent);
+                    margin-top: 2px;
+                }
+
+                .g-status-block { margin-top: 6px; }
+
+                .g-status {
+                    font-size: 0.7rem;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    padding: 4px 8px;
+                    border-radius: 6px;
+                }
+
+                .g-status.live { background: #dcfce7; color: #166534; }
+                .g-status.offline { background: #f1f5f9; color: #475569; }
+
+                .g-actions {
+                    display: flex;
+                    gap: 8px;
+                    margin-top: auto;
+                    padding-top: 8px;
+                }
+
+                .g-btn {
+                    flex: 1;
+                    height: 32px;
+                    border-radius: 8px;
+                    font-size: 0.8rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+
+                .g-btn.fill { background: var(--primary); color: white; border: none; }
+                .g-btn.outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+
+                .g-icon-btn {
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 8px;
+                    background: var(--bg-subtle);
+                    color: var(--text-secondary);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    text-decoration: none;
+                    border: 1px solid var(--border);
+                }
+
+                .g-icon-btn.delete { color: #ef4444; border-color: #fee2e2; background: #fef2f2; }
+
             `}</style>
         </div>
     );

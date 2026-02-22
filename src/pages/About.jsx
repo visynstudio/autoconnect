@@ -8,7 +8,7 @@ import {
 export default function About() {
     return (
         <div className="about-page-wrapper">
-            {/* 1️⃣ PAGE HEADER */}
+            {/* 1 PAGE HEADER */}
             <header className="page-header section-bg">
                 <div className="container">
                     <h1 className="page-title">Our Story</h1>
@@ -16,7 +16,7 @@ export default function About() {
                 </div>
             </header>
 
-            {/* 2️⃣ WHO WE ARE */}
+            {/* 2 WHO WE ARE */}
             <section className="section">
                 <div className="container">
                     <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
@@ -30,7 +30,7 @@ export default function About() {
                 </div>
             </section>
 
-            {/* 3️⃣ MISSION CARD */}
+            {/* 3 MISSION CARD */}
             <section className="section" style={{ paddingTop: 0 }}>
                 <div className="container">
                     <div className="mission-card card animate-fade-in">
@@ -42,7 +42,7 @@ export default function About() {
                 </div>
             </section>
 
-            {/* 4️⃣ CORE VALUES */}
+            {/* 4 CORE VALUES */}
             <section className="section section-bg">
                 <div className="container">
                     <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
@@ -71,7 +71,7 @@ export default function About() {
                 </div>
             </section>
 
-            {/* 5️⃣ HOW IT WORKS */}
+            {/* 5 HOW IT WORKS */}
             <section className="section">
                 <div className="container">
                     <h2 className="section-title" style={{ textAlign: 'center', marginBottom: '4rem' }}>Simplified Process</h2>
@@ -92,7 +92,7 @@ export default function About() {
                 </div>
             </section>
 
-            {/* 6️⃣ CTA */}
+            {/* 6 CTA */}
             <section className="section section-bg">
                 <div className="container">
                     <div className="cta-box card">
